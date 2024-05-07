@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:inferno_core_fyp/res/constants.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:inferno_core_fyp/view/controls_panel.dart';
+import 'package:inferno_core_fyp/view%20models/controllers/target_controller.dart';
 
 import '../res/widgets/appBar components/my_appbar.dart';
+import '../res/widgets/exception_widget.dart';
 import '../res/widgets/general widgets/target_widget.dart';
+import '../res/widgets/shimmer widgets/rectangle_shimmer.dart';
 import '../view models/controllers/general_controller.dart';
 
 class HomePage extends StatelessWidget {
@@ -15,6 +17,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     GeneralController generalController = Get.put(GeneralController());
+    TargetController targetController = Get.put(TargetController());
     return Scaffold(
       appBar: myAppBar(title: "InfernoCore"),
       body: SingleChildScrollView(
@@ -55,23 +58,81 @@ class HomePage extends StatelessWidget {
                   color: txtColor,
                 ),
               ),
-              TargetWidget(
-                name: "Munir",
-                targetId: "123",
-                onTap: () {},
-              ),
-              TargetWidget(
-                name: "Zain",
-                targetId: "123",
-                onTap: () {
-                  Get.to(() => const ControlPanel());
-                },
-              ),
-              TargetWidget(
-                name: "Usman",
-                targetId: "123",
-                onTap: () {},
-              ),
+              Obx(() {
+                final double listHeight = targetController.onlineTargets.length * 90;
+                final onlineTargets = targetController.onlineTargets;
+
+                if (targetController.loading2.value) {
+                  return const SizedBox(
+                    height: 140,
+                    child: RectangleShimmer(
+                      height: 60,
+                      items: 2,
+                      radius: 6,
+                    ),
+                  );
+                } else if (targetController.isError2.value) {
+                  if (targetController.errorStr.value == 'No Internet') {
+                    return SizedBox(
+                      height: 230,
+                      child: ExceptionWidget(
+                        text: internetExceptionString,
+                        onPressed: () => targetController.getAllTargetsOnline(),
+                      ),
+                    );
+                  } else {
+                    return SizedBox(
+                      height: 230,
+                      child: ExceptionWidget(
+                        text: generalExceptionString,
+                        onPressed: () => targetController.getAllTargetsOnline(),
+                      ),
+                    );
+                  }
+                } else if (onlineTargets.isNotEmpty) {
+                  return SizedBox(
+                    height: listHeight,
+                    child: ListView.builder(
+                      itemCount: onlineTargets.length,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return TargetWidget(
+                          name: onlineTargets[index].name,
+                          targetId: onlineTargets[index].targetId,
+                          targetController: targetController,
+                          onTap: () {},
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  return SizedBox(
+                    height: 200,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.message_outlined,
+                            color: txtColor.withOpacity(.6),
+                            size: 60,
+                          ),
+                          10.ph,
+                          Text(
+                            "You currently don't have\nany online targets.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: txtColor.withOpacity(.8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+              }),
               15.ph,
               InkWell(
                 onTap: () {},

@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:inferno_core_fyp/models/online_target_model.dart';
 import 'package:inferno_core_fyp/models/targets_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -22,10 +23,12 @@ class TargetController extends GetxController {
   final userIdFocusNode = FocusNode().obs;
 
   RxBool loading = false.obs, isError = false.obs;
+  RxBool loading2 = false.obs, isError2 = false.obs;
   RxString errorStr = ''.obs;
   String filePath = '';
   Uint8List? fileBytes;
-  RxList<TargetsModel> offlineTargets = <TargetsModel>[].obs;
+  RxList<Target> allTargets = <Target>[].obs;
+  RxList<OnlineTarget> onlineTargets = <OnlineTarget>[].obs;
 
   Future pickFile() async {
     try {
@@ -87,7 +90,7 @@ class TargetController extends GetxController {
       loading.value = true;
       final List<dynamic> jsonData = await _repo.getAllTargets();
 
-      offlineTargets.value = jsonData.map((data) => TargetsModel.fromJson(data)).toList();
+      allTargets.value = jsonData.map((data) => Target.fromJson(data)).toList();
       loading.value = false;
     } catch (error) {
       loading.value = false;
@@ -98,16 +101,16 @@ class TargetController extends GetxController {
 
   Future<void> getAllTargetsOnline() async {
     try {
-      isError.value = false;
-      loading.value = true;
-      final Map<String, dynamic> data = await _repo.getAllTargetsOnline();
+      isError2.value = false;
+      loading2.value = true;
+      Map<String, dynamic> jsonMap = await _repo.getAllTargetsOnline();
 
-      // final TargetModel fileModel = TargetModel.fromJson(data);
-      // files.assignAll(fileModel.files);
-      loading.value = false; // Update collections
+      List<dynamic> jsonData = jsonMap['online_accessible_targets'];
+      onlineTargets.value = jsonData.map((data) => OnlineTarget.fromJson(data)).toList();
+      loading2.value = false; // Update collections
     } catch (error) {
-      loading.value = false;
-      isError.value = true;
+      loading2.value = false;
+      isError2.value = true;
       errorStr.value = error.toString();
     }
   }
@@ -193,6 +196,8 @@ class TargetController extends GetxController {
       };
       await _repo.deleteTarget(params).then((response) async {
         Utils.dismissLoadingDialog();
+        getAllTargets();
+        getAllTargetsOnline();
         if (response['detail'] != null) {
           Utils.toastMsg(response['detail']);
         } else {

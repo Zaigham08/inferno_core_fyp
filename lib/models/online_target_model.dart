@@ -1,18 +1,18 @@
-class Target {
+class OnlineTarget {
   final String targetId;
   final String name;
   final List<String> accessibleByUsers;
   final String targetAccessKey;
 
-  Target({
+  OnlineTarget({
     required this.targetId,
     required this.name,
     required this.accessibleByUsers,
     required this.targetAccessKey,
   });
 
-  factory Target.fromJson(Map<String, dynamic> json) {
-    return Target(
+  factory OnlineTarget.fromJson(Map<String, dynamic> json) {
+    return OnlineTarget(
       targetId: json['target_id'],
       name: json['name'],
       accessibleByUsers: List<String>.from(json['accessible_by_users']),

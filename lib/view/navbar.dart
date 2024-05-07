@@ -25,7 +25,7 @@ class _NavBarState extends State<NavBar> {
   void initState() {
     userController.fetchUserData();
     targetController.getAllTargets();
-    // targetController.getAllTargetsOnline();
+    targetController.getAllTargetsOnline();
 
     super.initState();
   }

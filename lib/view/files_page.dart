@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
-import 'package:inferno_core_fyp/res/widgets/button%20components/my_text_btn.dart';
 
 import '../res/constants.dart';
 import '../res/widgets/appBar components/my_appbar.dart';
 import '../res/widgets/general widgets/my_text.dart';
-import '../utils/utils.dart';
 
 class ExtractedFilesPage extends StatelessWidget {
-  ExtractedFilesPage({Key? key}) : super(key: key);
+  ExtractedFilesPage({super.key});
 
   final List<ExtractedFilesModel> files = [
     ExtractedFilesModel(name: "File 1", extractedFrom: "Zain Pc"),

@@ -1,20 +1,22 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
 import 'package:inferno_core_fyp/res/widgets/general%20widgets/my_text.dart';
+import 'package:inferno_core_fyp/view%20models/controllers/target_controller.dart';
 
 import '../../constants.dart';
 
 class TargetWidget extends StatelessWidget {
   final String name, targetId;
   final VoidCallback onTap;
+  final TargetController targetController;
 
   const TargetWidget({
     super.key,
     required this.name,
     required this.onTap,
     required this.targetId,
+    required this.targetController,
   });
 
   @override
@@ -46,7 +48,7 @@ class TargetWidget extends StatelessWidget {
               ),
             ),
             14.pw,
-            Flexible(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -66,6 +68,46 @@ class TargetWidget extends StatelessWidget {
                 ],
               ),
             ),
+            4.pw,
+            InkWell(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return SizedBox(
+                        height: Get.height * .15,
+                        child: Column(
+                          children: [
+                            8.ph,
+                            Container(
+                                height: 4,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.circular(10),
+                                )),
+                            10.ph,
+                            ListTile(
+                              leading: const Icon(Icons.delete),
+                              title: const Text(
+                                'Delete',
+                                style: TextStyle(
+                                  color: txtColor,
+                                  fontSize: 17,
+                                ),
+                              ),
+                              onTap: () {
+                                Get.back();
+                                targetController.deleteTarget(targetId);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: const Icon(Icons.more_vert_outlined)),
           ],
         ),
       ),

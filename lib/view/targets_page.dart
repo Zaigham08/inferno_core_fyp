@@ -17,60 +17,155 @@ class AllTargetsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TargetController targetController = Get.put(TargetController());
-    final double height = targetController.offlineTargets.length * 90;
     return Scaffold(
-        appBar: myAppBar(title: "Targets"),
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.all(kDefaultPadding - 3),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                addTargetWidget(),
-                12.ph,
-                const MyText(
-                  'Targets (offline)',
-                  fontSize: 16,
-                  color: txtColor,
-                ),
-                SizedBox(
-                  height: height == 0.0 ? 230 : height,
-                  child: Obx(() {
-                    final offlineTargets = targetController.offlineTargets;
+      appBar: myAppBar(title: "Targets"),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.all(kDefaultPadding - 3),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              addTargetWidget(),
+              12.ph,
+              const MyText(
+                'Targets (online)',
+                fontSize: 16,
+                color: txtColor,
+              ),
+              Obx(() {
+                final double listHeight = targetController.onlineTargets.length * 90;
+                final onlineTargets = targetController.onlineTargets;
 
-                    if (targetController.loading.value) {
-                      return const RectangleShimmer(
-                        height: 60,
-                        items: 2,
-                        radius: 6,
-                      );
-                    } else if (targetController.isError.value) {
-                      if (targetController.errorStr.value == 'No Internet') {
-                        return ExceptionWidget(
-                          text: internetExceptionString,
-                          onPressed: () => targetController.getAllTargets(),
+                if (targetController.loading2.value) {
+                  return const SizedBox(
+                    height: 140,
+                    child: RectangleShimmer(
+                      height: 60,
+                      items: 2,
+                      radius: 6,
+                    ),
+                  );
+                } else if (targetController.isError2.value) {
+                  if (targetController.errorStr.value == 'No Internet') {
+                    return SizedBox(
+                      height: 230,
+                      child: ExceptionWidget(
+                        text: internetExceptionString,
+                        onPressed: () => targetController.getAllTargetsOnline(),
+                      ),
+                    );
+                  } else {
+                    return SizedBox(
+                      height: 230,
+                      child: ExceptionWidget(
+                        text: generalExceptionString,
+                        onPressed: () => targetController.getAllTargetsOnline(),
+                      ),
+                    );
+                  }
+                } else if (onlineTargets.isNotEmpty) {
+                  return SizedBox(
+                    height: listHeight,
+                    child: ListView.builder(
+                      itemCount: onlineTargets.length,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return TargetWidget(
+                          name: onlineTargets[index].name,
+                          targetId: onlineTargets[index].targetId,
+                          targetController: targetController,
+                          onTap: () {},
                         );
-                      } else {
-                        return ExceptionWidget(
-                          text: generalExceptionString,
-                          onPressed: () => targetController.getAllTargets(),
+                      },
+                    ),
+                  );
+                } else {
+                  return SizedBox(
+                    height: 200,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.message_outlined,
+                            color: txtColor.withOpacity(.6),
+                            size: 60,
+                          ),
+                          10.ph,
+                          Text(
+                            "You currently don't have\nany online targets.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: txtColor.withOpacity(.8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+              }),
+              20.ph,
+              const MyText(
+                'All Targets',
+                fontSize: 16,
+                color: txtColor,
+              ),
+              Obx(() {
+                final double listHeight = targetController.allTargets.length * 90;
+                final allTargets = targetController.allTargets;
+
+                if (targetController.loading.value) {
+                  return const SizedBox(
+                    height: 140,
+                    child: RectangleShimmer(
+                      height: 60,
+                      items: 2,
+                      radius: 6,
+                    ),
+                  );
+                } else if (targetController.isError.value) {
+                  if (targetController.errorStr.value == 'No Internet') {
+                    return SizedBox(
+                      height: 230,
+                      child: ExceptionWidget(
+                        text: internetExceptionString,
+                        onPressed: () => targetController.getAllTargets(),
+                      ),
+                    );
+                  } else {
+                    return SizedBox(
+                      height: 230,
+                      child: ExceptionWidget(
+                        text: generalExceptionString,
+                        onPressed: () => targetController.getAllTargets(),
+                      ),
+                    );
+                  }
+                } else if (allTargets.isNotEmpty) {
+                  return SizedBox(
+                    height: listHeight,
+                    child: ListView.builder(
+                      itemCount: allTargets.length,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return TargetWidget(
+                          name: allTargets[index].name,
+                          targetId: allTargets[index].targetId,
+                          targetController: targetController,
+                          onTap: () {},
                         );
-                      }
-                    } else if (offlineTargets.isNotEmpty) {
-                      return ListView.builder(
-                        itemCount: offlineTargets.length,
-                        physics: const BouncingScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return TargetWidget(
-                            name: offlineTargets[index].name,
-                            targetId: offlineTargets[index].targetId,
-                            onTap: () {},
-                          );
-                        },
-                      );
-                    } else {
-                      return Column(
+                      },
+                    ),
+                  );
+                } else {
+                  return SizedBox(
+                    height: 210,
+                    child: Center(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
@@ -89,34 +184,15 @@ class AllTargetsPage extends StatelessWidget {
                             ),
                           ),
                         ],
-                      );
-                    }
-                  }),
-                ),
-                20.ph,
-                const MyText(
-                  'Targets (online)',
-                  fontSize: 16,
-                  color: txtColor,
-                ),
-                TargetWidget(
-                  name: "Munir",
-                  targetId: "123",
-                  onTap: () {},
-                ),
-                TargetWidget(
-                  name: "Usman",
-                  targetId: "123",
-                  onTap: () {},
-                ),
-                TargetWidget(
-                  name: "Zain",
-                  targetId: "123",
-                  onTap: () {},
-                ),
-              ],
-            ),
+                      ),
+                    ),
+                  );
+                }
+              }),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
