@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "767227560932",
+    "project_id": "infernocore-6721c",
+    "storage_bucket": "infernocore-6721c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:767227560932:android:c874fddfa1c5745e6bfdf1",
+        "android_client_info": {
+          "package_name": "com.ainnovate.inferno_core"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "767227560932-efibmsmm05bmsatq04frnshhjir8knu6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcmynnQrcejWa1d-LzL9DMCARv-Woiy58"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "767227560932-efibmsmm05bmsatq04frnshhjir8knu6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
