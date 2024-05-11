@@ -19,7 +19,7 @@ class MyTextButton extends StatelessWidget {
     this.height = 47,
     this.buttonColor = btnColor,
     this.isLoading = false,
-    this.btnTxtSize = 15.5,
+    this.btnTxtSize = 15,
     this.radius = 10,
     this.spacing,
   });

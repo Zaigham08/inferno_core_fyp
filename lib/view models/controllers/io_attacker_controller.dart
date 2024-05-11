@@ -13,55 +13,94 @@ class IoAttackerController extends GetxController {
 
   RxBool loading = false.obs, isError = false.obs;
   RxString errorStr = ''.obs;
+  String commandId = "";
 
-  Future submitCommand(String targetId) async {
+  Future submitCommand({required String targetId, required Map data}) async {
     try {
-      Utils.showLoadingDialog('Submitting...');
-      Map data = {
-        "text": '',
-        "command_args": "",
-      };
-      await _repo.submitCommand(data: data, targetId: targetId).then((response) async {
-        Utils.dismissLoadingDialog();
-        Utils.toastMsg("Command submitted successfully");
-        Get.back();
-      });
+      Map<String, dynamic> jsonMap =
+          await _repo.submitCommand(data: data, targetId: targetId);
+      commandId = jsonMap["command"]["id"];
+
+      Utils.toastMsg("Command submitted successfully");
     } catch (error) {
-      Utils.dismissLoadingDialog();
       Utils.toastMsg("Error: $error");
     }
   }
 
-  Future<void> checkResponseAvailability(String commandId) async {
+  Future<bool> checkResponseAvailability() async {
+    try {
+      final Map<String, dynamic> data =
+          await _repo.checkResponseAvailability(commandId: commandId);
+
+      if (data.containsKey("available") && data["available"] == true) {
+        return true; // Return true if available is true
+      } else {
+        return false;
+      }
+    } catch (error) {
+      errorStr.value = error.toString();
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>> getCommandResponse() async {
     try {
       isError.value = false;
       loading.value = true;
-      final Map<String, dynamic> data = await _repo.checkResponseAvailability(commandId: commandId);
+      final Map<String, dynamic> data =
+          await _repo.getCommandResponse(commandId: commandId);
 
-      // final TargetModel fileModel = TargetModel.fromJson(data);
-      // files.assignAll(fileModel.files);
       loading.value = false;
+      return data;
     } catch (error) {
       loading.value = false;
       isError.value = true;
       errorStr.value = error.toString();
+      return {};
     }
   }
 
-  Future<void> getCommandResponse(String commandId) async {
+  Future<Map<String, dynamic>> executeCommand({required String targetId, required Map data}) async {
     try {
-      isError.value = false;
-      loading.value = true;
-      final Map<String, dynamic> data = await _repo.getCommandResponse(commandId: commandId);
+      // Call submitCommand function to submit the command
+      Utils.showLoadingDialog('Executing...');
+      await submitCommand(targetId: targetId, data: data);
 
-      // final TargetModel fileModel = TargetModel.fromJson(data);
-      // files.assignAll(fileModel.files);
-      loading.value = false;
+      // Start a timer for 10 seconds
+      const timeout = Duration(seconds: 10);
+      final endTime = DateTime.now().add(timeout);
+
+      // Repeat checkResponseAvailability function until timeout
+      while (DateTime.now().isBefore(endTime)) {
+        final bool success = await checkResponseAvailability();
+
+        if (success) {
+          final Map<String, dynamic> response = await getCommandResponse();
+
+          if (response.isNotEmpty) {
+            Utils.toastMsg("Data received successfully!");
+            Utils.dismissLoadingDialog();
+            return response;
+          } else {
+            Utils.dismissLoadingDialog();
+            Utils.toastMsg("Error: Unable to retrieve data");
+          }
+          break; // Exit the loop if successful response received
+        }
+
+        // Wait for a short interval before calling checkResponseAvailability again
+        await Future.delayed(const Duration(seconds: 1));
+      }
+      // Handle case if no successful response is received within 10 seconds
+      if (!isError.value) {
+        Utils.toastMsg("No successful response received within 10 seconds");
+      }
+      Utils.dismissLoadingDialog();
+      return {};
     } catch (error) {
-      loading.value = false;
-      isError.value = true;
-      errorStr.value = error.toString();
+      Utils.dismissLoadingDialog();
+      Utils.toastMsg("Error: $error");
+      return {};
     }
   }
-
 }

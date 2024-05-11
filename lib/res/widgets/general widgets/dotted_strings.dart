@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'my_text.dart';
 
-Padding dotsSeparatedStrings({required String t1, required String t2}) {
+Padding dotsSeparatedStrings({required String t1, String? t2}) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 3),
     child: MyText(

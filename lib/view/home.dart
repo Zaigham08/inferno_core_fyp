@@ -4,8 +4,10 @@ import 'package:get/get.dart';
 import 'package:inferno_core_fyp/res/constants.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
 import 'package:inferno_core_fyp/view%20models/controllers/target_controller.dart';
+import 'package:inferno_core_fyp/view/controls_panel.dart';
 
 import '../res/widgets/appBar components/my_appbar.dart';
+import '../res/widgets/button components/my_text_btn.dart';
 import '../res/widgets/exception_widget.dart';
 import '../res/widgets/general widgets/target_widget.dart';
 import '../res/widgets/shimmer widgets/rectangle_shimmer.dart';
@@ -59,7 +61,8 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               Obx(() {
-                final double listHeight = targetController.onlineTargets.length * 90;
+                final double listHeight =
+                    targetController.onlineTargets.length * 90;
                 final onlineTargets = targetController.onlineTargets;
 
                 if (targetController.loading2.value) {
@@ -100,14 +103,19 @@ class HomePage extends StatelessWidget {
                           name: onlineTargets[index].name,
                           targetId: onlineTargets[index].targetId,
                           targetController: targetController,
-                          onTap: () {},
+                          onTap: () {
+                            Get.to(() => ControlPanel(
+                                  targetId: onlineTargets[index].targetId,
+                                  targetName: onlineTargets[index].name,
+                                ));
+                          },
                         );
                       },
                     ),
                   );
                 } else {
                   return SizedBox(
-                    height: 200,
+                    height: 210,
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -126,6 +134,14 @@ class HomePage extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                               color: txtColor.withOpacity(.8),
                             ),
+                          ),
+                          15.ph,
+                          MyTextButton(
+                            text: "Refresh",
+                            onPressed: () =>
+                                targetController.getAllTargetsOnline(),
+                            width: 85,
+                            height: 45,
                           ),
                         ],
                       ),

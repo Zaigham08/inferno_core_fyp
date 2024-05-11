@@ -8,7 +8,7 @@ import '../../res/widgets/general widgets/dotted_strings.dart';
 import '../../res/widgets/general widgets/my_text.dart';
 
 class Network extends StatelessWidget {
-  const Network({Key? key}) : super(key: key);
+  const Network({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +44,17 @@ class Network extends StatelessWidget {
                 MyTextButton(
                   text: "Available\ndevices",
                   onPressed: () {},
-                  height: 52,
+                  height: 57,
                 ),
                 MyTextButton(
                   text: "Get wifi\npasswords",
                   onPressed: () {},
-                  height: 52,
+                  height: 57,
                 ),
                 MyTextButton(
                   text: "Get available\nadapters",
                   onPressed: () {},
-                  height: 52,
+                  height: 57,
                 ),
               ],
             ),

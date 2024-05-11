@@ -6,10 +6,12 @@ import 'package:inferno_core_fyp/view%20models/controllers/target_controller.dar
 
 import '../res/constants.dart';
 import '../res/widgets/appBar components/my_appbar.dart';
+import '../res/widgets/button components/my_text_btn.dart';
 import '../res/widgets/exception_widget.dart';
 import '../res/widgets/general widgets/add_target_widget.dart';
 import '../res/widgets/general widgets/target_widget.dart';
 import '../res/widgets/shimmer widgets/rectangle_shimmer.dart';
+import 'controls_panel.dart';
 
 class AllTargetsPage extends StatelessWidget {
   const AllTargetsPage({super.key});
@@ -75,14 +77,19 @@ class AllTargetsPage extends StatelessWidget {
                           name: onlineTargets[index].name,
                           targetId: onlineTargets[index].targetId,
                           targetController: targetController,
-                          onTap: () {},
+                          onTap: () {
+                            Get.to(() => ControlPanel(
+                              targetId: onlineTargets[index].targetId,
+                              targetName: onlineTargets[index].name,
+                            ));
+                          },
                         );
                       },
                     ),
                   );
                 } else {
                   return SizedBox(
-                    height: 200,
+                    height: 210,
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -101,6 +108,13 @@ class AllTargetsPage extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                               color: txtColor.withOpacity(.8),
                             ),
+                          ),
+                          15.ph,
+                          MyTextButton(
+                            text: "Refresh",
+                            onPressed: ()=> targetController.getAllTargetsOnline(),
+                            width: 85,
+                            height: 45,
                           ),
                         ],
                       ),
@@ -163,7 +177,7 @@ class AllTargetsPage extends StatelessWidget {
                   );
                 } else {
                   return SizedBox(
-                    height: 210,
+                    height: 220,
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -182,6 +196,13 @@ class AllTargetsPage extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                               color: txtColor.withOpacity(.8),
                             ),
+                          ),
+                          15.ph,
+                          MyTextButton(
+                            text: "Refresh",
+                            onPressed: ()=> targetController.getAllTargets(),
+                            width: 85,
+                            height: 45,
                           ),
                         ],
                       ),

@@ -148,6 +148,8 @@ class TargetController extends GetxController {
         onPressed: downloadPayLoad,
         onPressedShared: sharePayLoad,
       ));
+      getAllTargets();
+      getAllTargetsOnline();
     } catch (error) {
       Utils.dismissLoadingDialog();
       Utils.toastMsg("Error: $error");
