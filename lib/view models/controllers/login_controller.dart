@@ -60,38 +60,8 @@ class LoginController extends GetxController {
     } catch (error) {
       loading.value = false;
       Utils.snackBar("Error", error.toString());
+      print("Error: $error");
     }
   }
 
-  // void loginWithGoogle() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   final isFirstTimeUser = prefs.getBool('isFirstTimeUser') ?? true;
-  //   Utils.showSimpleLoading();
-  //   authService.signInWithGoogle().then((response) async {
-  //     if (response != null) {
-  //       await _repo.createUser().then((response) async {
-  //         final detail = response['detail'];
-  //         detail == null
-  //             ? Utils.toastMsg("User created Successfully")
-  //             : detail == "User already exists"
-  //                 ? null
-  //                 : Utils.toastMsg(detail);
-  //         Utils.dismissLoadingDialog();
-  //           Get.offAll(() => const NavBar(),
-  //               transition: Transition.rightToLeft,
-  //               duration: const Duration(milliseconds: 1500));
-  //           Utils.snackBar("Success!", "Login Successfully");
-  //       }).onError((error, stackTrace) {
-  //         Utils.dismissLoadingDialog();
-  //         Utils.toastMsg(error.toString());
-  //       });
-  //     } else {
-  //       Utils.dismissLoadingDialog();
-  //       Utils.snackBar("Error", 'Login Failed');
-  //     }
-  //   }).onError((error, stackTrace) {
-  //     Utils.dismissLoadingDialog();
-  //     Utils.snackBar("Error", error.toString());
-  //   });
-  // }
 }

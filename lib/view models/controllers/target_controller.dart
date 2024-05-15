@@ -49,11 +49,11 @@ class TargetController extends GetxController {
     try {
       isError.value = false;
       loading.value = true;
-      final Map<String, String> params = {
-        'target_id': targetId,
-      };
-      final Map<String, dynamic> data = await _repo.getTarget(params);
-
+      // final Map<String, String> params = {
+      //   'target_id': targetId,
+      // };
+      // final Map<String, dynamic> data = await _repo.getTarget(params);
+      //
       // final TargetModel fileModel = TargetModel.fromJson(data);
       // files.assignAll(fileModel.files);
       loading.value = false; // Update collections
@@ -68,15 +68,15 @@ class TargetController extends GetxController {
     try {
       isError.value = false;
       loading.value = true;
-      final Map<String, String> params = {
-        'target_id': targetId,
-        'file_ref': '',
-      };
-      final Map<String, dynamic> data = await _repo.getTarget(params);
-
-      // final TargetModel fileModel = TargetModel.fromJson(data);
-      // files.assignAll(fileModel.files);
-      loading.value = false; // Update collections
+      // final Map<String, String> params = {
+      //   'target_id': targetId,
+      //   'file_ref': '',
+      // };
+      // final Map<String, dynamic> data = await _repo.getTarget(params);
+      //
+      // // final TargetModel fileModel = TargetModel.fromJson(data);
+      // // files.assignAll(fileModel.files);
+      // loading.value = false; // Update collections
     } catch (error) {
       loading.value = false;
       isError.value = true;
@@ -119,7 +119,7 @@ class TargetController extends GetxController {
     try {
       isError.value = false;
       loading.value = true;
-      final Map<String, dynamic> data = await _repo.getAllTargetFiles();
+      // final Map<String, dynamic> data = await _repo.getAllTargetFiles();
 
       // final TargetModel fileModel = TargetModel.fromJson(data);
       // files.assignAll(fileModel.files);

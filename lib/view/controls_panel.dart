@@ -39,13 +39,8 @@ class _ControlPanelState extends State<ControlPanel> {
 
   @override
   void initState() {
-    getData();
-    super.initState();
-  }
-
-  void getData() async{
-    await Future.delayed(const Duration(seconds: 1));
     generalController.getSystemInfo(widget.targetId);
+    super.initState();
   }
 
   @override
@@ -108,11 +103,11 @@ class _ControlPanelState extends State<ControlPanel> {
                       Get.to(() => const Accounts());
                     },
                   ),
-                  CommandItem(
-                    text: "Firewall",
-                    icon: Icons.security,
-                    onTap: () {},
-                  ),
+                  // CommandItem(
+                  //   text: "Firewall",
+                  //   icon: Icons.security,
+                  //   onTap: () {},
+                  // ),
                   CommandItem(
                     text: "Hardware",
                     icon: Icons.hardware,
@@ -130,14 +125,14 @@ class _ControlPanelState extends State<ControlPanel> {
                     text: "Task Manager",
                     icon: Icons.task,
                     onTap: () {
-                      Get.to(() => const TaskManagerPage());
+                      Get.to(() => TaskManagerPage(targetId: widget.targetId));
                     },
                   ),
                   CommandItem(
                     text: "HostFile",
                     icon: Icons.file_copy,
                     onTap: () {
-                      Get.to(() => const HostFilePage());
+                      Get.to(() => HostFilePage(targetId: widget.targetId));
                     },
                   ),
                 ],
@@ -164,7 +159,7 @@ class _ControlPanelState extends State<ControlPanel> {
                     icon: Icons.network_wifi,
                     iconSize: 30,
                     onTap: () {
-                      Get.to(() => const Network());
+                      Get.to(() => Network(targetId: widget.targetId));
                     },
                   ),
                 ],
@@ -176,7 +171,7 @@ class _ControlPanelState extends State<ControlPanel> {
                     text: "Shell",
                     icon: FontAwesomeIcons.solidFileCode,
                     onTap: () {
-                      Get.to(() => const Shell());
+                      Get.to(() => Shell(targetId: widget.targetId));
                     },
                   ),
                   CommandItem(

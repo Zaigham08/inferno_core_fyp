@@ -60,10 +60,11 @@ class IoAttackerController extends GetxController {
     }
   }
 
-  Future<Map<String, dynamic>> executeCommand({required String targetId, required Map data}) async {
+  Future<Map<String, dynamic>> executeCommand({bool showLoading = true ,required String targetId, required Map data}) async {
     try {
-      // Call submitCommand function to submit the command
-      Utils.showLoadingDialog('Executing...');
+      if(showLoading) {
+        Utils.showLoadingDialog('Executing...');
+      }
       await submitCommand(targetId: targetId, data: data);
 
       // Start a timer for 10 seconds

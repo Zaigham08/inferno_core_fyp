@@ -59,6 +59,7 @@ dependencies:
   flutter_native_splash: ^2.3.5
   shimmer: ^3.0.0
   font_awesome_flutter: ^10.7.0
+  uuid: ^4.4.0
 
 dev_dependencies:
   flutter_test:

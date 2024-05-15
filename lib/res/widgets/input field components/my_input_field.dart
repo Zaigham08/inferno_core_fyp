@@ -17,7 +17,7 @@ class MyInputField extends StatelessWidget {
   final IconData? icon;
 
   const MyInputField({
-    Key? key,
+    super.key,
     required this.hintText,
     this.width = double.infinity,
     this.controller,
@@ -31,7 +31,7 @@ class MyInputField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.textCapitalization = TextCapitalization.sentences,
     this.icon, required this.textColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

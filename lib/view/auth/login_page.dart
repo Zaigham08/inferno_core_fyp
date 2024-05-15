@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
 import 'package:inferno_core_fyp/view/auth/register.dart';
 
-import '../../res/widgets/button components/image_text_button.dart';
 import '../../res/widgets/button components/my_text_btn.dart';
 import '../../res/widgets/input field components/my_input_field.dart';
 import '../../res/widgets/general widgets/rich_texts_link.dart';
@@ -26,10 +25,6 @@ class LoginPage extends StatelessWidget {
       onPopInvoked: (_) async {
         SystemNavigator.pop();
       },
-      // onWillPop: () async {
-      //   SystemNavigator.pop();
-      //   return true;
-      // },
       child: Scaffold(
         body: Container(
           height: Get.height,
@@ -146,24 +141,7 @@ class LoginPage extends StatelessWidget {
                       },
                     ),
                   ),
-                  32.ph,
-                  Text(
-                    'Or Continue with',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: txtColor.withOpacity(0.85),
-                    ),
-                  ),
-                  18.ph,
-                  ImageTextButton(
-                    txt: 'Continue with Google',
-                    imgPath: 'assets/images/google_logo.png',
-                    onPressed: () {
-                      // loginController.loginWithGoogle();
-                    },
-                  ),
-                  60.ph,
+                  35.ph,
                   RichTextsLink(
                     onPressed: () {
                       Get.to(() => RegisterPage(),
@@ -184,10 +162,3 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-// height: Get.height,
-// decoration: const BoxDecoration(
-// image: DecorationImage(
-// image: AssetImage('assets/images/img3.jpg'), // Replace with your image path
-// fit: BoxFit.cover,
-// ),
-// ),

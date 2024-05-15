@@ -6,9 +6,25 @@ import 'package:inferno_core_fyp/res/widgets/button%20components/my_text_btn.dar
 
 import '../../res/widgets/general widgets/dotted_strings.dart';
 import '../../res/widgets/general widgets/my_text.dart';
+import '../../view models/controllers/general_controller.dart';
 
-class Network extends StatelessWidget {
-  const Network({super.key});
+class Network extends StatefulWidget {
+  final String targetId;
+
+  const Network({super.key, required this.targetId});
+
+  @override
+  State<Network> createState() => _NetworkState();
+}
+
+class _NetworkState extends State<Network> {
+  GeneralController generalController = Get.put(GeneralController());
+
+  @override
+  void initState() {
+    generalController.getNetworkInfo(widget.targetId);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +43,18 @@ class Network extends StatelessWidget {
                   borderRadius: BorderRadius.circular(7),
                   border: Border.all(color: whiteColor, width: 2),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    dotsSeparatedStrings(t1: "IP", t2: "198.168.0.1"),
-                    dotsSeparatedStrings(t1: "Country ", t2: "Pakistan"),
-                    dotsSeparatedStrings(t1: "More Info ", t2: "Abcd"),
-                  ],
+                child: Obx(
+                  () => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      dotsSeparatedStrings(
+                          t1: "Country ", t2: generalController.country.value),
+                      dotsSeparatedStrings(
+                          t1: "City ", t2: generalController.city.value),
+                      dotsSeparatedStrings(
+                          t1: "IP", t2: generalController.publicIP.value),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -43,17 +64,23 @@ class Network extends StatelessWidget {
               children: [
                 MyTextButton(
                   text: "Available\ndevices",
-                  onPressed: () {},
+                  onPressed: () {
+                    generalController.getAvailableDevices(widget.targetId);
+                  },
                   height: 57,
                 ),
                 MyTextButton(
                   text: "Get wifi\npasswords",
-                  onPressed: () {},
+                  onPressed: () {
+                    generalController.getWifiPasswords(widget.targetId);
+                  },
                   height: 57,
                 ),
                 MyTextButton(
-                  text: "Get available\nadapters",
-                  onPressed: () {},
+                  text: "Get wifi\nnetworks",
+                  onPressed: () {
+                    generalController.getWifiNetworks(widget.targetId);
+                  },
                   height: 57,
                 ),
               ],
@@ -61,26 +88,91 @@ class Network extends StatelessWidget {
             20.ph,
             Expanded(
               child: Container(
-                padding: const EdgeInsets.all(10),
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(7),
-                  border: Border.all(color: whiteColor, width: 2),
-                ),
-                child: const SingleChildScrollView(
-                  child: MyText(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing"
-                      " elit. Sed consequat, sapien ac viverra sollicitudin, libero nulla s"
-                      "celerisque nulla, sit amet facilisis sapien eros vel quam. Nulla facil"
-                      "isi. Curabitur in turpis id metus dictum feugiat. Sed non risus auctor, va"
-                      "rius erat id, faucibus eros. Duis ut arcu et neque scelerisque venenatis."),
+                constraints: BoxConstraints(maxHeight: Get.height * 0.45),
+                child: SingleChildScrollView(
+                  child: Obx(
+                    () {
+                      if (generalController.showInTable.value == 'passwords') {
+                        final passwordData = generalController.networkData;
+                        if (passwordData.isEmpty) {
+                          return const Text('No passwords available');
+                        } else {
+                          return BuildTable(
+                            col1Name: "WiFi",
+                            col2Name: "Password",
+                            networkData: passwordData,
+                          );
+                        }
+                      } else if (generalController.showInTable.value ==
+                          'availableDevices') {
+                        final networkData = generalController.networkData;
+                        if (networkData.isEmpty) {
+                          return const Text('No devices available');
+                        } else {
+                          return BuildTable(
+                            col1Name: "IP",
+                            col2Name: "Mac",
+                            networkData: networkData,
+                          );
+                        }
+                      } else {
+                        final networkData = generalController.networkData;
+                        if (networkData.isEmpty) {
+                          return const Center(child: MyText('No data to show', fontSize: 16));
+                        } else {
+                          return BuildTable(
+                            col1Name: "Name",
+                            col2Name: "Security",
+                            networkData: networkData,
+                          );
+                        }
+                      }
+                    },
+                  ),
                 ),
               ),
             ),
-            10.ph
           ],
         ),
       ),
+    );
+  }
+}
+
+class BuildTable extends StatelessWidget {
+  const BuildTable({
+    super.key,
+    required this.col1Name,
+    required this.col2Name,
+    required this.networkData,
+  });
+
+  final String col1Name, col2Name;
+  final RxList<DataRow> networkData;
+
+  @override
+  Widget build(BuildContext context) {
+    return DataTable(
+      border: TableBorder.all(color: Colors.white),
+      columnSpacing: 30,
+      columns: [
+        DataColumn(
+          label: MyText(
+            col1Name,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        DataColumn(
+          label: MyText(
+            col2Name,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+      ],
+      rows: networkData,
     );
   }
 }
