@@ -62,6 +62,8 @@ class TargetWidget extends StatelessWidget {
                   ),
                   MyText(
                     "Target Id: $targetId",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     fontSize: 12,
                     color: whiteColor,
                   ),

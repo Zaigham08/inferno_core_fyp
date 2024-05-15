@@ -30,10 +30,31 @@ class AllTargetsPage extends StatelessWidget {
             children: [
               addTargetWidget(),
               12.ph,
-              const MyText(
-                'Targets (online)',
-                fontSize: 16,
-                color: txtColor,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const MyText(
+                    'Targets (online)',
+                    fontSize: 16,
+                    color: txtColor,
+                  ),
+                  GestureDetector(
+                    onTap: () => targetController.getAllTargetsOnline(),
+                    child: const Column(
+                      children: [
+                        Row(
+                          children: [
+                            MyText("Refresh", fontSize: 15),
+                            Icon(
+                              Icons.refresh,
+                              size: 26,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               Obx(() {
                 final double listHeight = targetController.onlineTargets.length * 90;
@@ -123,10 +144,31 @@ class AllTargetsPage extends StatelessWidget {
                 }
               }),
               20.ph,
-              const MyText(
-                'All Targets',
-                fontSize: 16,
-                color: txtColor,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const MyText(
+                    'All Targets',
+                    fontSize: 16,
+                    color: txtColor,
+                  ),
+                  GestureDetector(
+                    onTap: () => targetController.getAllTargets(),
+                    child: const Column(
+                      children: [
+                        Row(
+                          children: [
+                            MyText("Refresh", fontSize: 15),
+                            Icon(
+                              Icons.refresh,
+                              size: 26,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               Obx(() {
                 final double listHeight = targetController.allTargets.length * 90;
@@ -134,10 +176,10 @@ class AllTargetsPage extends StatelessWidget {
 
                 if (targetController.loading.value) {
                   return const SizedBox(
-                    height: 140,
+                    height: 215,
                     child: RectangleShimmer(
                       height: 60,
-                      items: 2,
+                      items: 3,
                       radius: 6,
                     ),
                   );

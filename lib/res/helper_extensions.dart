@@ -17,3 +17,10 @@ extension StringFilePathExtension on String {
   }
 }
 
+extension DoubleExtension on double {
+  double roundOff(int decimalPlaces) {
+    double mod = 10.0 * decimalPlaces;
+    return ((this * mod).round().toDouble() / mod);
+  }
+}
+
