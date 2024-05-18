@@ -121,7 +121,7 @@ class _ControlPanelState extends State<ControlPanel> {
                     text: "Programs",
                     icon: Icons.computer,
                     onTap: () {
-                      Get.to(() => const Programs());
+                      Get.to(() => Programs(targetId: widget.targetId));
                     },
                   ),
                   CommandItem(

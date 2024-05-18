@@ -24,3 +24,15 @@ extension DoubleExtension on double {
   }
 }
 
+extension PercentageParsing on String {
+  double toPercentageValue() {
+    final regex = RegExp(r'(\d+(\.\d+)?)');
+    final match = regex.firstMatch(this);
+    if (match != null) {
+      return double.parse(match.group(0)!);
+    }
+    throw const FormatException("No percentage value found in the string");
+  }
+}
+
+

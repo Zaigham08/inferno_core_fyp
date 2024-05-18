@@ -8,7 +8,7 @@ class RichTextsLink extends StatelessWidget {
   final VoidCallback onPressed;
 
   const RichTextsLink({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.text1,
     required this.text2,
@@ -16,7 +16,7 @@ class RichTextsLink extends StatelessWidget {
     this.text1Color = txtColor,
     this.text1ColorOpacity = 0.8,
     this.text2Color = txtColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
