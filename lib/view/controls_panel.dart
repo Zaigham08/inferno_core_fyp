@@ -11,7 +11,7 @@ import 'package:inferno_core_fyp/view/controls/harware_info.dart';
 import 'package:inferno_core_fyp/view/controls/host_file.dart';
 import 'package:inferno_core_fyp/view/controls/keylogger.dart';
 import 'package:inferno_core_fyp/view/controls/network.dart';
-import 'package:inferno_core_fyp/view/controls/pc.dart';
+import 'package:inferno_core_fyp/view/controls/pc_commands.dart';
 import 'package:inferno_core_fyp/view/controls/shell.dart';
 import 'package:inferno_core_fyp/view/controls/sys_files.dart';
 import 'package:inferno_core_fyp/view/controls/task_manager.dart';
@@ -94,7 +94,7 @@ class _ControlPanelState extends State<ControlPanel> {
                     icon: Icons.desktop_windows_outlined,
                     iconSize: 27,
                     onTap: () {
-                      Get.to(() => const PC());
+                      Get.to(() => PcCommandsPage(targetId: widget.targetId));
                     },
                   ),
                   CommandItem(

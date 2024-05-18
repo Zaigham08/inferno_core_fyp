@@ -29,7 +29,17 @@ class _HardwareInfoPageState extends State<HardwareInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Hardware Info"), centerTitle: true),
+      appBar: AppBar(
+        title: const Text("Hardware Info"),
+        centerTitle: true,
+        actions: [
+          InkWell(
+            onTap: () => generalController.getHardwareInfo(widget.targetId),
+            child: const Icon(Icons.refresh, size: 30),
+          ),
+          14.pw,
+        ],
+      ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
@@ -41,11 +51,7 @@ class _HardwareInfoPageState extends State<HardwareInfoPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    GestureDetector(
-                      onTap: () =>
-                          generalController.getHardwareInfo(widget.targetId),
-                      child: const HeadingText(text: "Ram Usage :"),
-                    ),
+                    const HeadingText(text: "Ram Usage :"),
                     ramCircularIndicator(),
                   ],
                 ),
