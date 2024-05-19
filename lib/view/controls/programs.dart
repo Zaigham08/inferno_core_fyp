@@ -83,18 +83,27 @@ class _ProgramsState extends State<Programs> {
                             program.publisher,
                             program.version,
                             _addBtn(onTap: () {
-                              Utils.toastMsg(
-                                  "function implemented but commented out");
+                              Utils.showDeleteConfirmationDialog(
+                                title: "Uninstall",
+                                text: "Are you sure you want to uninstall?",
+                                onConfirm: () {
+                                  Utils.toastMsg(
+                                      "function implemented but commented out");
+                                  //ioAttackerController.submitCommand(
+                                  //   targetId: widget.targetId,
+                                  //   data: {
+                                  //     "text": 'RUN_UNINSTALLER',
+                                  //     "command_args": {
+                                  //       "uninstall_string": program.uninstallString
+                                  //     },
+                                  //   },
+                                  // ),
+                                  Get.back();
+                                },
+                                onCancel: () => Get.back(),
+                                confirmBtnTxt: "Uninstall"
+                              );
                             }
-                                // onTap: () => ioAttackerController.submitCommand(
-                                //   targetId: widget.targetId,
-                                //   data: {
-                                //     "text": 'RUN_UNINSTALLER',
-                                //     "command_args": {
-                                //       "uninstall_string": program.uninstallString
-                                //     },
-                                //   },
-                                // ),
                                 ),
                           ],
                         ),

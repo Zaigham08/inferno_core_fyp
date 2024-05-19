@@ -1,43 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
+import 'package:inferno_core_fyp/res/widgets/show_if_empty.dart';
 
 import '../res/constants.dart';
 import '../res/widgets/appBar components/my_appbar.dart';
 import '../res/widgets/general widgets/my_text.dart';
+import '../res/widgets/shimmer widgets/rectangle_shimmer.dart';
+import '../view models/controllers/target_controller.dart';
 
 class ExtractedFilesPage extends StatelessWidget {
-  ExtractedFilesPage({super.key});
-
-  final List<ExtractedFilesModel> files = [
-    ExtractedFilesModel(name: "File 1", extractedFrom: "Zain Pc"),
-    ExtractedFilesModel(name: "File 2", extractedFrom: "Zain Pc"),
-    ExtractedFilesModel(name: "File 3", extractedFrom: "Zain Pc"),
-    ExtractedFilesModel(name: "File 4", extractedFrom: "Zain Pc"),
-    ExtractedFilesModel(name: "File 5", extractedFrom: "Zain Pc"),
-    ExtractedFilesModel(name: "File 6", extractedFrom: "Zain Pc"),
-    ExtractedFilesModel(name: "File 7", extractedFrom: "Zain Pc"),
-  ];
+  const ExtractedFilesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final TargetController targetController = Get.put(TargetController());
     return Scaffold(
       appBar: myAppBar(title: "Extracted Files"),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: kDefaultPadding - 5, vertical: 10),
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: files.length,
-            itemBuilder: (context, index) {
-              return FileItem(
-                name: files[index].name,
-                extractedFrom: files[index].extractedFrom,
-              );
-            },
-          ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: kDefaultPadding - 5,
+          vertical: 10,
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () => targetController.getAllTargetFiles(),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const MyText("Refresh", fontSize: 16),
+                          4.pw,
+                          const Icon(
+                            Icons.refresh,
+                            size: 28,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            5.ph,
+            Expanded(
+              child: Obx(
+                () {
+                  if (targetController.loading3.value) {
+                    return const RectangleShimmer(
+                      height: 56,
+                      items: 4,
+                      radius: 6,
+                    );
+                  } else if (targetController.targetFiles.isNotEmpty) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: targetController.targetFiles.length,
+                      itemBuilder: (context, index) {
+                        return FileItem(
+                          name: targetController.targetFiles[index].fileName,
+                          targetId:
+                              targetController.targetFiles[index].targetId,
+                          fileRef:
+                              targetController.targetFiles[index].fileReference,
+                          extractedFrom:
+                              targetController.targetFiles[index].targetName,
+                          targetController: targetController,
+                        );
+                      },
+                    );
+                  } else {
+                    return showIfEmpty("No files extracted");
+                  }
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -45,10 +87,18 @@ class ExtractedFilesPage extends StatelessWidget {
 }
 
 class FileItem extends StatelessWidget {
-  final String name;
+  final String name, targetId, fileRef;
   final String extractedFrom;
+  final TargetController targetController;
 
-  const FileItem({super.key, required this.name, required this.extractedFrom});
+  const FileItem({
+    super.key,
+    required this.name,
+    required this.extractedFrom,
+    required this.targetController,
+    required this.targetId,
+    required this.fileRef,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -78,59 +128,61 @@ class FileItem extends StatelessWidget {
           ),
           5.pw,
           InkWell(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (context) {
-                  return SizedBox(
-                    height: Get.height * .2,
-                    child: Column(
-                      children: [
-                        8.ph,
-                        Container(
-                            height: 4,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(10),
-                            )),
-                        10.ph,
-                        ListTile(
-                          leading: const Icon(Icons.download),
-                          title: const Text(
-                            'Download',
-                            style: TextStyle(
-                              color: txtColor,
-                              fontSize: 17,
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return SizedBox(
+                      height: Get.height * .2,
+                      child: Column(
+                        children: [
+                          8.ph,
+                          Container(
+                              height: 4,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10),
+                              )),
+                          10.ph,
+                          ListTile(
+                            leading: const Icon(Icons.download),
+                            title: const Text(
+                              'Download',
+                              style: TextStyle(
+                                color: txtColor,
+                                fontSize: 17,
+                              ),
                             ),
+                            onTap: () {
+                              Get.back();
+                              targetController.targetFileDownload(
+                                targetId: targetId,
+                                fileRef: fileRef,
+                                fileName: name,
+                              );
+                            },
                           ),
-                          onTap: () {
-                            Get.back();
-
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.delete),
-                          title: const Text(
-                            'Delete',
-                            style: TextStyle(
-                              color: txtColor,
-                              fontSize: 17,
+                          ListTile(
+                            leading: const Icon(Icons.delete),
+                            title: const Text(
+                              'Delete',
+                              style: TextStyle(
+                                color: txtColor,
+                                fontSize: 17,
+                              ),
                             ),
+                            onTap: () {
+                              Get.back();
+                            },
                           ),
-                          onTap: () {
-                            Get.back();
-
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
-            child: const Icon(Icons.more_vert_outlined)
-          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+              child: const Icon(Icons.more_vert_outlined)),
         ],
       ),
     );

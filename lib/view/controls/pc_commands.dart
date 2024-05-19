@@ -32,13 +32,18 @@ class PcCommandsPage extends StatelessWidget {
                   icon: Icons.restart_alt,
                   height: 120,
                   onTap: () {
-                    ioAttackerController.submitCommand(
-                      targetId: targetId,
-                      data: {
-                        "text": "RESTART",
-                        "command_args": {}
-                      },
-                    );
+                    Utils.showDeleteConfirmationDialog(
+                        title: "Restart",
+                        text: "Are you sure you want to restart?",
+                        onConfirm: () {
+                          ioAttackerController.submitCommand(
+                            targetId: targetId,
+                            data: {"text": "RESTART", "command_args": {}},
+                          );
+                          Get.back();
+                        },
+                        onCancel: () => Get.back(),
+                        confirmBtnTxt: "Yes");
                   },
                 ),
                 IconTextBtn(
@@ -46,13 +51,18 @@ class PcCommandsPage extends StatelessWidget {
                   icon: CupertinoIcons.power,
                   height: 120,
                   onTap: () {
-                    ioAttackerController.submitCommand(
-                      targetId: targetId,
-                      data: {
-                        "text": "SHUTDOWN",
-                        "command_args": {}
-                      },
-                    );
+                    Utils.showDeleteConfirmationDialog(
+                        title: "Shutdown",
+                        text: "Are you sure you want to shutdown?",
+                        onConfirm: () {
+                          ioAttackerController.submitCommand(
+                            targetId: targetId,
+                            data: {"text": "SHUTDOWN", "command_args": {}},
+                          );
+                          Get.back();
+                        },
+                        onCancel: () => Get.back(),
+                        confirmBtnTxt: "Yes");
                   },
                 ),
                 IconTextBtn(
@@ -60,13 +70,21 @@ class PcCommandsPage extends StatelessWidget {
                   icon: Icons.pause,
                   height: 120,
                   onTap: () {
-                    ioAttackerController.submitCommand(
-                      targetId: targetId,
-                      data: {
-                        "text": "FREEZE_PC",
-                        "command_args": {}
-                      },
-                    );
+                    Utils.showDeleteConfirmationDialog(
+                        title: "Freeze",
+                        text: "Are you sure you want to Freeze?",
+                        onConfirm: () {
+                          // ioAttackerController.submitCommand(
+                          //   targetId: targetId,
+                          //   data: {
+                          //     "text": "FREEZE_PC",
+                          //     "command_args": {}
+                          //   },
+                          // );
+                          Get.back();
+                        },
+                        onCancel: () => Get.back(),
+                        confirmBtnTxt: "Yes");
                   },
                 ),
               ],
@@ -84,13 +102,21 @@ class PcCommandsPage extends StatelessWidget {
                       height: 65,
                       isVertical: false,
                       onTap: () {
-                        ioAttackerController.submitCommand(
-                          targetId: targetId,
-                          data: {
-                            "text": "MINIMIZE_ALL_WINDOWS",
-                            "command_args": {}
-                          },
-                        );
+                        Utils.showDeleteConfirmationDialog(
+                            title: "Minimize",
+                            text: "Are you sure you want to minimize?",
+                            onConfirm: () {
+                              ioAttackerController.submitCommand(
+                                targetId: targetId,
+                                data: {
+                                  "text": "MINIMIZE_ALL_WINDOWS",
+                                  "command_args": {}
+                                },
+                              );
+                              Get.back();
+                            },
+                            onCancel: () => Get.back(),
+                            confirmBtnTxt: "Yes");
                       },
                     ),
                     20.ph,
@@ -99,14 +125,22 @@ class PcCommandsPage extends StatelessWidget {
                       icon: Icons.security,
                       isVertical: false,
                       onTap: () {
-                        Utils.toastMsg("Command submitted successfully");
-                        // ioAttackerController.submitCommand(
-                        //   targetId: targetId,
-                        //   data: {
-                        //     "text": "LOGOUT",
-                        //     "command_args": {}
-                        //   },
-                        // );
+                        Utils.showDeleteConfirmationDialog(
+                            title: "Firewall On/Off",
+                            text: "Are you sure you want to On/Off Firewall?",
+                            onConfirm: () {
+                              Utils.toastMsg("Command submitted successfully");
+                              // ioAttackerController.submitCommand(
+                              //   targetId: targetId,
+                              //   data: {
+                              //     "text": "LOGOUT",
+                              //     "command_args": {}
+                              //   },
+                              // );
+                              Get.back();
+                            },
+                            onCancel: () => Get.back(),
+                            confirmBtnTxt: "Yes");
                       },
                     ),
                     20.ph,
@@ -115,13 +149,18 @@ class PcCommandsPage extends StatelessWidget {
                       icon: Icons.exit_to_app_outlined,
                       isVertical: false,
                       onTap: () {
-                        ioAttackerController.submitCommand(
-                          targetId: targetId,
-                          data: {
-                            "text": "LOGOUT",
-                            "command_args": {}
-                          },
-                        );
+                        Utils.showDeleteConfirmationDialog(
+                            title: "Log off",
+                            text: "Are you sure you want to log off?",
+                            onConfirm: () {
+                              ioAttackerController.submitCommand(
+                                targetId: targetId,
+                                data: {"text": "LOGOUT", "command_args": {}},
+                              );
+                              Get.back();
+                            },
+                            onCancel: () => Get.back(),
+                            confirmBtnTxt: "Yes");
                       },
                     ),
                   ],

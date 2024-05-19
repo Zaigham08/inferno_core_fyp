@@ -6,7 +6,7 @@ import 'package:inferno_core_fyp/res/widgets/button%20components/my_text_btn.dar
 import '../../res/widgets/general widgets/dotted_strings.dart';
 
 class Accounts extends StatelessWidget {
-  const Accounts({Key? key}) : super(key: key);
+  const Accounts({super.key});
 
   @override
   Widget build(BuildContext context) {

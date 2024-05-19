@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:inferno_core_fyp/models/online_target_model.dart';
+import 'package:inferno_core_fyp/models/target_file.dart';
 import 'package:inferno_core_fyp/models/targets_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -24,10 +25,12 @@ class TargetController extends GetxController {
 
   RxBool loading = false.obs, isError = false.obs;
   RxBool loading2 = false.obs, isError2 = false.obs;
+  RxBool loading3 = false.obs, isError3 = false.obs;
   RxString errorStr = ''.obs;
   String filePath = '';
   Uint8List? fileBytes;
   RxList<Target> allTargets = <Target>[].obs;
+  RxList<TargetFile> targetFiles = <TargetFile>[].obs;
   RxList<OnlineTarget> onlineTargets = <OnlineTarget>[].obs;
 
   Future pickFile() async {
@@ -64,26 +67,6 @@ class TargetController extends GetxController {
     }
   }
 
-  Future<void> getTargetFileDownload(String targetId) async {
-    try {
-      isError.value = false;
-      loading.value = true;
-      // final Map<String, String> params = {
-      //   'target_id': targetId,
-      //   'file_ref': '',
-      // };
-      // final Map<String, dynamic> data = await _repo.getTarget(params);
-      //
-      // // final TargetModel fileModel = TargetModel.fromJson(data);
-      // // files.assignAll(fileModel.files);
-      // loading.value = false; // Update collections
-    } catch (error) {
-      loading.value = false;
-      isError.value = true;
-      errorStr.value = error.toString();
-    }
-  }
-
   Future<void> getAllTargets() async {
     try {
       isError.value = false;
@@ -106,7 +89,8 @@ class TargetController extends GetxController {
       Map<String, dynamic> jsonMap = await _repo.getAllTargetsOnline();
 
       List<dynamic> jsonData = jsonMap['online_accessible_targets'];
-      onlineTargets.value = jsonData.map((data) => OnlineTarget.fromJson(data)).toList();
+      onlineTargets.value =
+          jsonData.map((data) => OnlineTarget.fromJson(data)).toList();
       loading2.value = false; // Update collections
     } catch (error) {
       loading2.value = false;
@@ -117,17 +101,49 @@ class TargetController extends GetxController {
 
   Future<void> getAllTargetFiles() async {
     try {
-      isError.value = false;
-      loading.value = true;
-      // final Map<String, dynamic> data = await _repo.getAllTargetFiles();
+      isError3.value = false;
+      loading3.value = true;
 
-      // final TargetModel fileModel = TargetModel.fromJson(data);
-      // files.assignAll(fileModel.files);
-      loading.value = false; // Update collections
+      List<dynamic> jsonData = await _repo.getAllTargetFiles();
+      targetFiles.value =
+          jsonData.map((data) => TargetFile.fromJson(data)).toList();
+      loading3.value = false; // Update collections
     } catch (error) {
-      loading.value = false;
-      isError.value = true;
+      loading3.value = false;
+      isError3.value = true;
       errorStr.value = error.toString();
+    }
+  }
+
+  Future<void> targetFileDownload(
+      {required String targetId,
+      required String fileRef,
+      required String fileName}) async {
+    try {
+      Utils.showLoadingDialog('Downloading...');
+      Map data = {"target_id": targetId, "file_ref": fileRef};
+      fileBytes = await _repo.targetFileDownload(data);
+      Utils.dismissLoadingDialog();
+      Get.to(
+        () => ShowFile(
+          appBarTitle: 'File',
+          text: 'Your File is ready!!',
+          imgPath: "assets/images/file_img.png",
+          onPressed: () => downloadFile(
+            fileName: fileName.split('.').first,
+            extension: fileName.split('.').last,
+          ),
+          onPressedShared: () => shareFile(
+            fileName: fileName.split('.').first,
+            extension: fileName.split('.').last,
+          ),
+        ),
+      );
+      getAllTargets();
+      getAllTargetsOnline();
+    } catch (error) {
+      Utils.dismissLoadingDialog();
+      Utils.toastMsg("Error: $error");
     }
   }
 
@@ -141,13 +157,16 @@ class TargetController extends GetxController {
       };
       fileBytes = await _repo.createTarget(data);
       Utils.dismissLoadingDialog();
-      Get.off(() => ShowFile(
-        appBarTitle: 'PayLoad',
-        text: 'Your PayLoad is ready!!',
-        imgPath: "assets/images/exe_img.png",
-        onPressed: downloadPayLoad,
-        onPressedShared: sharePayLoad,
-      ));
+      Get.off(
+        () => ShowFile(
+          appBarTitle: 'PayLoad',
+          text: 'Your PayLoad is ready!!',
+          imgPath: "assets/images/exe_img.png",
+          onPressed: () => downloadFile(fileName: "payload", extension: "exe"),
+          onPressedShared: () =>
+              shareFile(fileName: "payload", extension: "exe"),
+        ),
+      );
       getAllTargets();
       getAllTargetsOnline();
     } catch (error) {
@@ -159,10 +178,12 @@ class TargetController extends GetxController {
   Future addUserToTarget() async {
     try {
       Utils.showLoadingDialog('Adding...');
-      await _repo.addUserToTarget(
+      await _repo
+          .addUserToTarget(
         targetId: "",
         userId: "",
-      ).then((response) async {
+      )
+          .then((response) async {
         Utils.dismissLoadingDialog();
         Utils.toastMsg("User added successfully");
         Get.back();
@@ -176,10 +197,12 @@ class TargetController extends GetxController {
   Future removeUserFromTarget() async {
     try {
       Utils.showLoadingDialog('Removing...');
-      await _repo.removeUserFromTarget(
+      await _repo
+          .removeUserFromTarget(
         targetId: "",
         userId: "",
-      ).then((response) async {
+      )
+          .then((response) async {
         Utils.dismissLoadingDialog();
         Utils.toastMsg("User removed successfully");
         Get.back();
@@ -212,12 +235,13 @@ class TargetController extends GetxController {
     }
   }
 
-  Future<void> downloadPayLoad() async {
+  Future<void> downloadFile(
+      {required String fileName, required String extension}) async {
     try {
       Utils.showLoadingDialog('Downloading...');
       final timestamp = DateTime.now().millisecondsSinceEpoch;
-      String fileName = 'payload-$timestamp.exe'.trim();
-      await _repo.createFile(fileName, fileBytes!);
+      String filename = '$fileName-$timestamp.$extension'.trim();
+      await _repo.createFile(filename, fileBytes!);
       Utils.dismissLoadingDialog();
     } catch (error) {
       Utils.dismissLoadingDialog();
@@ -225,19 +249,18 @@ class TargetController extends GetxController {
     }
   }
 
-  Future<void> sharePayLoad() async {
+  Future<void> shareFile(
+      {required String fileName, required String extension}) async {
     try {
       final tempDir = await getTemporaryDirectory();
-      final tempFile = File('${tempDir.path}/payload.exe');
+      final tempFile = File('${tempDir.path}/$fileName.$extension');
       await tempFile.writeAsBytes(fileBytes!);
 
-      Share.shareXFiles([XFile(tempFile.path)])
-          .then((value) {
+      Share.shareXFiles([XFile(tempFile.path)]).then((value) {
         tempFile.delete();
       });
     } catch (e) {
       Utils.toastMsg("Error sharing Payload: $e");
     }
   }
-
 }

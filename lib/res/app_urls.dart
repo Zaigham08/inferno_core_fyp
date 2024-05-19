@@ -1,6 +1,6 @@
 class AppUrl{
 
-  static const baseUrl = 'http://34.93.20.122';
+  static const baseUrl = 'http://35.244.12.135';
   //user
   static const userApi = '$baseUrl/users/';
   //target
@@ -8,7 +8,7 @@ class AppUrl{
   static const getAllTargetsApi = '$baseUrl/target/all';
   static const getAllTargetFilesApi = '$baseUrl/target/files';
   static const getOnlineTargetsApi = '$baseUrl/target/online';
-  static const getTargetFileDownloadApi = '$baseUrl/target/file/download';
+  static const targetFileDownloadApi = '$baseUrl/target/file/download';
   //io-target
   static const receiveCommandResponseApi = '$baseUrl/io-target/commands/response';
   static const receiveFileCommandResponseApi = '$baseUrl/io-target/commands/file-response';

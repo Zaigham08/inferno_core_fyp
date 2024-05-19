@@ -11,15 +11,15 @@ Center showIfEmpty(String text) {
         Icon(
           Icons.error_outline,
           color: txtColor.withOpacity(.5),
-          size: 57,
+          size: 56,
         ),
         5.ph,
         Text(
           text,
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
+            fontSize: 19,
+            fontWeight: FontWeight.bold,
             color: txtColor.withOpacity(.5),
           ),
         ),

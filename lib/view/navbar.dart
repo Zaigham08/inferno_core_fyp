@@ -26,6 +26,7 @@ class _NavBarState extends State<NavBar> {
     userController.fetchUserData();
     targetController.getAllTargets();
     targetController.getAllTargetsOnline();
+    targetController.getAllTargetFiles();
 
     super.initState();
   }
@@ -33,7 +34,7 @@ class _NavBarState extends State<NavBar> {
   final List<Widget> _pages = [
     const HomePage(),
     const AllTargetsPage(),
-    ExtractedFilesPage(),
+    const ExtractedFilesPage(),
   ];
 
   @override

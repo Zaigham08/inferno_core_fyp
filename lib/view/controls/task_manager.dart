@@ -106,17 +106,24 @@ class _TaskManagerPageState extends State<TaskManagerPage> {
                             process.name,
                             process.memoryUsage,
                             _addBtn(onTap: () {
-                              Utils.toastMsg(
-                                  "function implemented but commented out");
-                            }
-                                // onTap: () => ioAttackerController.submitCommand(
-                                //   targetId: widget.targetId,
-                                //   data: {
-                                //     "text": 'KILL_PROCESS',
-                                //     "command_args": {"pid": process.pid},
-                                //   },
-                                // ),
-                                ),
+                              Utils.showDeleteConfirmationDialog(
+                                  title: "Kill the process",
+                                  text: "Are you sure you want to kill?",
+                                  onConfirm: () {
+                                    Utils.toastMsg(
+                                        "function implemented but commented out");
+                                    // onTap: () => ioAttackerController.submitCommand(
+                                    //   targetId: widget.targetId,
+                                    //   data: {
+                                    //     "text": 'KILL_PROCESS',
+                                    //     "command_args": {"pid": process.pid},
+                                    //   },
+                                    // ),
+                                    Get.back();
+                                  },
+                                  onCancel: () => Get.back(),
+                                  confirmBtnTxt: "Kill");
+                            }),
                           ],
                         ),
                       ],

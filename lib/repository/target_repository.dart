@@ -21,8 +21,8 @@ class TargetRepository{
     return await _apiService.getApi(AppUrl.getAllTargetFilesApi);
   }
 
-  Future<dynamic> getTargetFileDownload(var params) async{
-    return await _apiService.getApiWithParams(AppUrl.getTargetFileDownloadApi, params);
+  Future<dynamic> targetFileDownload(var data) async{
+    return await _apiService.postApiForFileBytes(AppUrl.targetFileDownloadApi, data);
   }
 
   Future<dynamic> createTarget(var data) async{

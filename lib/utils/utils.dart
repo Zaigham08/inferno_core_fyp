@@ -164,4 +164,66 @@ class Utils {
       ),
     );
   }
+
+  static showDeleteConfirmationDialog({
+    required String title,
+    required String text,
+    required VoidCallback onConfirm,
+    required VoidCallback onCancel,
+    String confirmBtnTxt = 'Delete',
+  }) {
+    Get.dialog(
+      Dialog(
+        backgroundColor: bgColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: SizedBox(
+          width: 350,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: kDefaultPadding, vertical: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontSize: 15,
+                      color: txtColor,
+                      fontWeight: FontWeight.bold),
+                ),
+                8.ph,
+                Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: txtColor,
+                  ),
+                ),
+                15.ph,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    MyTextButton(
+                      width: 90,
+                      text: 'Cancel',
+                      buttonColor: Colors.green.withOpacity(.85),
+                      onPressed: onCancel,
+                    ),
+                    MyTextButton(
+                      width: 90,
+                      text: confirmBtnTxt,
+                      onPressed: onConfirm,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
 }
