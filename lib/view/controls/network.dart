@@ -22,7 +22,9 @@ class _NetworkState extends State<Network> {
 
   @override
   void initState() {
-    generalController.getNetworkInfo(widget.targetId);
+    if(generalController.country.value == '') {
+      generalController.getNetworkInfo(widget.targetId);
+    }
     super.initState();
   }
 

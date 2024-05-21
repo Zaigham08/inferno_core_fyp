@@ -18,11 +18,13 @@ class HardwareInfoPage extends StatefulWidget {
 }
 
 class _HardwareInfoPageState extends State<HardwareInfoPage> {
-  final generalController = GeneralController();
+  GeneralController generalController = Get.put(GeneralController());
 
   @override
   void initState() {
-    generalController.getHardwareInfo(widget.targetId);
+    if(generalController.cpuUsage.value == 0.0) {
+      generalController.getHardwareInfo(widget.targetId);
+    }
     super.initState();
   }
 

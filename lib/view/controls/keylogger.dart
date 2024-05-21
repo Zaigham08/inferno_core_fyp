@@ -15,7 +15,7 @@ class KeyLogger extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final generalController = GeneralController();
+    GeneralController generalController = Get.put(GeneralController());
     IoAttackerController ioAttackerController = Get.put(IoAttackerController());
     return Scaffold(
       appBar: AppBar(title: const Text("KeyLogs"), centerTitle: true),
