@@ -44,7 +44,7 @@ class _ShellState extends State<Shell> {
                   GestureDetector(
                     onTap: () {
                       generalController.maxLines.value = 1;
-                      generalController.generalController.value.clear();
+                      generalController.commonController.value.clear();
                     },
                     child: const MyText(
                       "Clear  ",
@@ -68,7 +68,7 @@ class _ShellState extends State<Shell> {
                       child: Form(
                         key: _formKey,
                         child: TextFormField(
-                          controller: generalController.generalController.value,
+                          controller: generalController.commonController.value,
                           textCapitalization: TextCapitalization.sentences,
                           maxLines: generalController.maxLines.value == 2
                               ? null

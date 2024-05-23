@@ -29,7 +29,7 @@ class HostFilePage extends StatelessWidget {
                 height: Get.height*.44,
                 hintText: "...Host file...",
                 textColor: blackColor,
-                controller: generalController.generalController.value,
+                controller: generalController.commonController.value,
               ),
               20.ph,
               Row(

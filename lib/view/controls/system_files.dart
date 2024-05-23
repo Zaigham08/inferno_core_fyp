@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inferno_core_fyp/res/constants.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
-import 'package:inferno_core_fyp/res/widgets/show_if_empty.dart';
+import 'package:inferno_core_fyp/res/widgets/general%20widgets/show_if_empty.dart';
 import 'package:inferno_core_fyp/view%20models/controllers/io_attacker_controller.dart';
 import 'package:uuid/uuid.dart';
 

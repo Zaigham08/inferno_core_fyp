@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
 import 'package:inferno_core_fyp/res/constants.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
 import 'package:inferno_core_fyp/view/controls/accounts.dart';
@@ -17,6 +16,7 @@ import 'package:inferno_core_fyp/view/controls/system_files.dart';
 import 'package:inferno_core_fyp/view/controls/task_manager.dart';
 import 'package:inferno_core_fyp/view/controls/troll_page.dart';
 
+import '../res/widgets/general widgets/command_item.dart';
 import '../res/widgets/general widgets/dotted_strings.dart';
 import '../res/widgets/general widgets/my_text.dart';
 import '../view models/controllers/general_controller.dart';
@@ -225,11 +225,15 @@ class _ControlPanelState extends State<ControlPanel> {
 class CommandSection extends StatelessWidget {
   final String sectionName;
   final List<CommandItem> items;
+  final double mainAxisExtent, maxCrossAxisExtent, childAspectRatio;
 
   const CommandSection({
     super.key,
     required this.sectionName,
     required this.items,
+    this.mainAxisExtent = 78,
+    this.maxCrossAxisExtent = 130,
+    this.childAspectRatio = 1.25,
   });
 
   @override
@@ -249,10 +253,10 @@ class CommandSection extends StatelessWidget {
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 130,
-            mainAxisExtent: 78,
-            childAspectRatio: 1.25,
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: maxCrossAxisExtent,
+            mainAxisExtent: mainAxisExtent,
+            childAspectRatio: childAspectRatio,
           ),
           itemCount: items.length,
           itemBuilder: (context, index) {
@@ -263,64 +267,3 @@ class CommandSection extends StatelessWidget {
     );
   }
 }
-
-class CommandItem extends StatelessWidget {
-  final String text;
-  final IconData icon;
-  final Callback onTap;
-  final double iconSize;
-
-  const CommandItem({
-    super.key,
-    required this.text,
-    required this.icon,
-    required this.onTap,
-    this.iconSize = 28,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Icon(icon, size: iconSize),
-          8.ph,
-          Expanded(child: MyText(text, textAlign: TextAlign.center)),
-        ],
-      ),
-    );
-  }
-}
-
-// Expanded(
-// child: GridView.builder(
-// gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-// crossAxisCount: 2,
-// crossAxisSpacing: 13, // Horizontal space between items
-// mainAxisSpacing: 13, // Vertical space between items
-// childAspectRatio: 2.3,
-// ),
-// itemCount: commands.length, // Number of items in the grid
-// physics: const BouncingScrollPhysics(),
-// itemBuilder: (BuildContext context, int index) {
-// return Container(
-// padding: const EdgeInsets.all(6),
-// decoration: BoxDecoration(
-// borderRadius: BorderRadius.circular(10),
-// border: Border.all(color: whiteColor, width: 2),
-// ),
-// child: Center(
-// child: Text(
-// commands[index],
-// textAlign: TextAlign.center,
-// style: const TextStyle(
-// fontWeight: FontWeight.bold,
-// fontSize: 19,
-// ),
-// ),
-// ),
-// );
-// },
-// ),
-// ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
 
-import '../constants.dart';
+import '../../constants.dart';
 
 Center showIfEmpty(String text) {
   return Center(

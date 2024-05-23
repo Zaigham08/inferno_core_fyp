@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
+import 'package:inferno_core_fyp/res/widgets/general%20widgets/my_dropdown.dart';
 import 'package:inferno_core_fyp/view%20models/controllers/target_controller.dart';
 
 import '../res/constants.dart';
@@ -85,6 +86,82 @@ class Utils {
     if (Get.isDialogOpen!) {
       Get.back(); // Close the loading dialog
     }
+  }
+
+  static showTextFieldDialog({
+    required String title,
+    required String hintText,
+    required TextEditingController controller,
+    required VoidCallback onTap,
+  }) {
+    Get.dialog(
+      Dialog(
+        backgroundColor: bgColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: SizedBox(
+          width: 350,
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                MyTextInputField(
+                  title: title,
+                  hintText: hintText,
+                  textColor: Colors.black,
+                  giveMargin: false,
+                  controller: controller,
+                ),
+                20.ph,
+                MyTextButton(
+                  width: 130,
+                  text: 'Send',
+                  onPressed: onTap,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  static showDropdownDialog({
+    required String title,
+    required String value,
+    required List<String> items,
+    required Function(String?) onValueChanged,
+    required VoidCallback onTap,
+  }) {
+    Get.dialog(
+      Dialog(
+        backgroundColor: bgColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: SizedBox(
+          width: 350,
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                MyDropdown(
+                  title: title,
+                  items: items,
+                  value: value,
+                  onChanged: onValueChanged,
+                ),
+                15.ph,
+                MyTextButton(
+                  width: 130,
+                  text: 'Send',
+                  onPressed: onTap,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   static showCreateTargetDialog() {
@@ -225,5 +302,4 @@ class Utils {
       ),
     );
   }
-
 }

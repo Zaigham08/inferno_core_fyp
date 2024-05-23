@@ -8,7 +8,7 @@ import 'package:inferno_core_fyp/view/controls_panel.dart';
 
 import '../res/widgets/appBar components/my_appbar.dart';
 import '../res/widgets/button components/my_text_btn.dart';
-import '../res/widgets/exception_widget.dart';
+import '../res/widgets/general widgets/exception_widget.dart';
 import '../res/widgets/general widgets/target_widget.dart';
 import '../res/widgets/shimmer widgets/rectangle_shimmer.dart';
 import '../view models/controllers/general_controller.dart';

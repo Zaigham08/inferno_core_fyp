@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
 
-import '../constants.dart';
-import 'button components/my_text_btn.dart';
+import '../../constants.dart';
+import '../button components/my_text_btn.dart';
 
 class ExceptionWidget extends StatelessWidget {
   final VoidCallback onPressed;

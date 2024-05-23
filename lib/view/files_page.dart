@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
-import 'package:inferno_core_fyp/res/widgets/show_if_empty.dart';
+import 'package:inferno_core_fyp/res/widgets/general%20widgets/show_if_empty.dart';
 
 import '../res/constants.dart';
 import '../res/widgets/appBar components/my_appbar.dart';
