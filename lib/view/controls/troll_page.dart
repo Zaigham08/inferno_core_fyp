@@ -194,7 +194,6 @@ class TrollPage extends StatelessWidget {
                           "command_args": {}
                         },
                       );
-                      generalController.commonController.value.clear();
                     },
                   ),
                   CommandItem(
@@ -208,7 +207,6 @@ class TrollPage extends StatelessWidget {
                           "command_args": {}
                         },
                       );
-                      generalController.commonController.value.clear();
                     },
                   ),
                   CommandItem(

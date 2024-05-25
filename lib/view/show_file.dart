@@ -11,6 +11,7 @@ class ShowFile extends StatelessWidget {
   final VoidCallback onPressed, onPressedShared;
   final String appBarTitle;
   final String? text, imgPath;
+  final bool isImage;
 
   const ShowFile({
     super.key,
@@ -20,6 +21,7 @@ class ShowFile extends StatelessWidget {
     required this.appBarTitle,
     this.text,
     this.imgPath,
+    this.isImage = false,
   });
 
   @override
@@ -35,35 +37,37 @@ class ShowFile extends StatelessWidget {
           children: [
             15.ph,
             Center(
-              child: Column(
-                children: [
-                  Text(
-                    text!,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+              child: isImage
+                  ? Image.memory(fileBytes!)
+                  : Column(
+                      children: [
+                        Text(
+                          text!,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        20.ph,
+                        Image.asset(
+                          imgPath!,
+                          height: 120,
+                        ),
+                      ],
                     ),
-                  ),
-                  20.ph,
-                  Image.asset(
-                    imgPath!,
-                    height: 120,
-                  ),
-                ],
-              ),
             ),
             70.ph,
             MyTextButton(
               text: "Download",
               onPressed: onPressed,
-              width: 180,
+              width: 170,
             ),
-            15.ph,
+            18.ph,
             MyTextButton(
               text: "Share",
               onPressed: onPressedShared,
-              width: 180,
+              width: 170,
             ),
             20.ph,
           ],

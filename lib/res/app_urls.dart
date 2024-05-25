@@ -1,6 +1,6 @@
 class AppUrl{
 
-  static const baseUrl = 'http://35.200.173.112';
+  static const baseUrl = 'http://34.100.163.13';
   //user
   static const userApi = '$baseUrl/users/';
   //target

@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import '../../repository/user_repository.dart';
 import '../../utils/utils.dart';
 import '../../view/navbar.dart';
-import '../services/google_auth_service.dart';
 
 class LoginController extends GetxController {
   final emailController = TextEditingController().obs;
@@ -18,7 +17,6 @@ class LoginController extends GetxController {
   RxBool loading = false.obs;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  AuthService authService = AuthService();
   final _repo = UserRepository();
 
   void toggleHidePassword() {
@@ -60,7 +58,6 @@ class LoginController extends GetxController {
     } catch (error) {
       loading.value = false;
       Utils.snackBar("Error", error.toString());
-      print("Error: $error");
     }
   }
 

@@ -28,7 +28,6 @@ class TargetController extends GetxController {
   RxBool loading3 = false.obs, isError3 = false.obs;
   RxString errorStr = ''.obs;
   String filePath = '';
-  Uint8List? fileBytes;
   RxList<Target> allTargets = <Target>[].obs;
   RxList<TargetFile> targetFiles = <TargetFile>[].obs;
   RxList<OnlineTarget> onlineTargets = <OnlineTarget>[].obs;
@@ -122,7 +121,8 @@ class TargetController extends GetxController {
     try {
       Utils.showLoadingDialog('Downloading...');
       Map data = {"target_id": targetId, "file_ref": fileRef};
-      fileBytes = await _repo.targetFileDownload(data);
+
+      Uint8List fileBytes = await _repo.targetFileDownload(data);
       Utils.dismissLoadingDialog();
       Get.to(
         () => ShowFile(
@@ -130,10 +130,12 @@ class TargetController extends GetxController {
           text: 'Your File is ready!!',
           imgPath: "assets/images/file_img.png",
           onPressed: () => downloadFile(
+            fileBytes: fileBytes,
             fileName: fileName.split('.').first,
             extension: fileName.split('.').last,
           ),
           onPressedShared: () => shareFile(
+            fileBytes: fileBytes,
             fileName: fileName.split('.').first,
             extension: fileName.split('.').last,
           ),
@@ -155,16 +157,23 @@ class TargetController extends GetxController {
         "name": nameController.value.text.trim(),
         "icon_base64": "",
       };
-      fileBytes = await _repo.createTarget(data);
+      Uint8List fileBytes = await _repo.createTarget(data);
       Utils.dismissLoadingDialog();
-      Get.off(
+      Get.to(
         () => ShowFile(
           appBarTitle: 'PayLoad',
           text: 'Your PayLoad is ready!!',
           imgPath: "assets/images/exe_img.png",
-          onPressed: () => downloadFile(fileName: "payload", extension: "exe"),
-          onPressedShared: () =>
-              shareFile(fileName: "payload", extension: "exe"),
+          onPressed: () => downloadFile(
+            fileBytes: fileBytes,
+            fileName: "payload",
+            extension: "exe",
+          ),
+          onPressedShared: () => shareFile(
+            fileBytes: fileBytes,
+            fileName: "payload",
+            extension: "exe",
+          ),
         ),
       );
       getAllTargets();
@@ -235,13 +244,16 @@ class TargetController extends GetxController {
     }
   }
 
-  Future<void> downloadFile(
-      {required String fileName, required String extension}) async {
+  Future<void> downloadFile({
+    required Uint8List fileBytes,
+    required String fileName,
+    required String extension,
+  }) async {
     try {
       Utils.showLoadingDialog('Downloading...');
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       String filename = '$fileName-$timestamp.$extension'.trim();
-      await _repo.createFile(filename, fileBytes!);
+      await _repo.createFile(filename, fileBytes);
       Utils.dismissLoadingDialog();
     } catch (error) {
       Utils.dismissLoadingDialog();
@@ -249,12 +261,15 @@ class TargetController extends GetxController {
     }
   }
 
-  Future<void> shareFile(
-      {required String fileName, required String extension}) async {
+  Future<void> shareFile({
+    required Uint8List fileBytes,
+    required String fileName,
+    required String extension,
+  }) async {
     try {
       final tempDir = await getTemporaryDirectory();
       final tempFile = File('${tempDir.path}/$fileName.$extension');
-      await tempFile.writeAsBytes(fileBytes!);
+      await tempFile.writeAsBytes(fileBytes);
 
       Share.shareXFiles([XFile(tempFile.path)]).then((value) {
         tempFile.delete();

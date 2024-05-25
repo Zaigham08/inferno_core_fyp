@@ -1,25 +1,24 @@
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:external_path/external_path.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:open_file_plus/open_file_plus.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as path;
-import 'package:external_path/external_path.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../utils/util_functions.dart';
 import '../../utils/utils.dart';
-import '../../view models/services/google_auth_service.dart';
 import '../app_exceptions.dart';
 import 'base_api_services.dart';
 
 class NetworkApiServices extends BaseApiServices {
-  final AuthService _authService = AuthService();
-
   @override
   Future getApi(String url) async {
-    String? idToken = await _authService.getIdToken();
+    String? idToken = await getIdToken();
     final headers = {
       'Authorization': 'Bearer $idToken',
     };
@@ -28,10 +27,9 @@ class NetworkApiServices extends BaseApiServices {
     try {
       final response = await http
           .get(
-            Uri.parse(url),
-            headers: headers,
-          )
-          .timeout(const Duration(seconds: 20));
+        Uri.parse(url),
+        headers: headers,
+      ).timeout(const Duration(seconds: 20));
 
       debugPrint(idToken);
       debugPrint("response ${response.body}");
@@ -48,7 +46,7 @@ class NetworkApiServices extends BaseApiServices {
   @override
   Future getApiWithParams(String url, var params) async {
     debugPrint("param = $params");
-    String? idToken = await _authService.getIdToken();
+    String? idToken = await getIdToken();
 
     final headers = {
       'Content-Type': 'application/json',
@@ -59,9 +57,9 @@ class NetworkApiServices extends BaseApiServices {
     try {
       final response = await http
           .get(
-            Uri.parse(url).replace(queryParameters: params),
-            headers: headers,
-          )
+        Uri.parse(url).replace(queryParameters: params),
+        headers: headers,
+      )
           .timeout(const Duration(seconds: 20));
 
       debugPrint(idToken);
@@ -77,9 +75,9 @@ class NetworkApiServices extends BaseApiServices {
   }
 
   @override
-  Future postApi(String url, var data ,{int time = 50}) async {
+  Future postApi(String url, var data, {int time = 50}) async {
     debugPrint("data -----------------  ${jsonEncode(data)}");
-    String? idToken = await _authService.getIdToken();
+    String? idToken = await getIdToken();
 
     final headers = {
       'Content-Type': 'application/json',
@@ -89,10 +87,10 @@ class NetworkApiServices extends BaseApiServices {
     try {
       final response = await http
           .post(
-            Uri.parse(url),
-            headers: headers,
-            body: jsonEncode(data),
-          );
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(data),
+      );
       debugPrint(idToken);
       debugPrint("response ${response.body}");
       responseJson = returnResponse(response);
@@ -106,9 +104,10 @@ class NetworkApiServices extends BaseApiServices {
   }
 
   @override
-  Future postApiWithParams(String url, var data, var params,{bool sendJson = true}) async {
+  Future postApiWithParams(String url, var data, var params,
+      {bool sendJson = true}) async {
     debugPrint("params -----------------  ${jsonEncode(params)}");
-    String? idToken = await _authService.getIdToken();
+    String? idToken = await getIdToken();
 
     final headers = {
       'Content-Type': 'application/json',
@@ -124,22 +123,21 @@ class NetworkApiServices extends BaseApiServices {
       );
       debugPrint(idToken);
 
-      if(sendJson) {
+      if (sendJson) {
         responseJson = returnResponse(response);
-      }else{
-        if(response.statusCode == 200) {
+      } else {
+        if (response.statusCode == 200) {
           return response.bodyBytes;
-        }else{
+        } else {
           throw Exception('${jsonDecode(response.body)["detail"]}');
         }
       }
-
     } on SocketException {
       throw InternetException('');
     } on RequestTimeOutException {
       throw RequestTimeOutException('');
     }
-    if(sendJson) {
+    if (sendJson) {
       return responseJson;
     }
   }
@@ -148,7 +146,7 @@ class NetworkApiServices extends BaseApiServices {
   @override
   Future putApi(String url, var data, var param) async {
     debugPrint("data -----------------  $data");
-    String? idToken = await _authService.getIdToken();
+    String? idToken = await getIdToken();
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $idToken',
@@ -179,7 +177,7 @@ class NetworkApiServices extends BaseApiServices {
   @override
   Future deleteApi(String url, var data) async {
     debugPrint("data -----------------  $data");
-    String? idToken = await _authService.getIdToken();
+    String? idToken = await getIdToken();
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $idToken',
@@ -188,13 +186,13 @@ class NetworkApiServices extends BaseApiServices {
     try {
       final response = await http
           .delete(
-            Uri.parse(url),
-            headers: headers,
-            body: jsonEncode(data),
-          )
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(data),
+      )
           .timeout(
-            const Duration(seconds: 20),
-          );
+        const Duration(seconds: 20),
+      );
       debugPrint(idToken);
       debugPrint("response ${response.body}");
       responseJson = returnResponse(response);
@@ -212,7 +210,7 @@ class NetworkApiServices extends BaseApiServices {
 
   @override
   Future deleteApiWithParams(String url, var params) async {
-    String? idToken = await _authService.getIdToken();
+    String? idToken = await getIdToken();
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $idToken',
@@ -227,8 +225,8 @@ class NetworkApiServices extends BaseApiServices {
       )
           .timeout(const Duration(seconds: 20));
 
-        debugPrint(idToken);
-        debugPrint("param response ${response.body}");
+      debugPrint(idToken);
+      debugPrint("param response ${response.body}");
 
       responseJson = returnResponse(response);
     } on SocketException {
@@ -244,9 +242,10 @@ class NetworkApiServices extends BaseApiServices {
     required String filePath,
     required var params,
   }) async {
-    final request = http.MultipartRequest('POST', Uri.parse(url).replace(queryParameters: params));
+    final request = http.MultipartRequest(
+        'POST', Uri.parse(url).replace(queryParameters: params));
 
-    String? idToken = await _authService.getIdToken();
+    String? idToken = await getIdToken();
     final headers = {
       'Authorization': 'Bearer $idToken',
       'Content-Type': 'multipart/form-data',
@@ -264,8 +263,8 @@ class NetworkApiServices extends BaseApiServices {
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
-        debugPrint(idToken);
-        debugPrint("file response ${response.body}");
+      debugPrint(idToken);
+      debugPrint("file response ${response.body}");
 
       responseJson = returnResponse(response);
     } on SocketException {
@@ -282,7 +281,7 @@ class NetworkApiServices extends BaseApiServices {
   }) async {
     final request = http.MultipartRequest('POST', Uri.parse(url));
 
-    String? idToken = await _authService.getIdToken();
+    String? idToken = await getIdToken();
     final headers = {
       'Authorization': 'Bearer $idToken',
       'Content-Type': 'multipart/form-data',
@@ -301,16 +300,15 @@ class NetworkApiServices extends BaseApiServices {
 
       debugPrint(idToken);
       debugPrint("response ${response.body}");
-      if(response.statusCode == 200) {
+      if (response.statusCode == 200) {
         return response.body;
       }
-      else if(response.statusCode == 400){
+      else if (response.statusCode == 400) {
         Utils.toastMsg(jsonDecode(response.body)["detail"]);
         return "400";
-      }else{
+      } else {
         throw Exception('Error: statusCode= ${response.statusCode}');
       }
-
     } on SocketException {
       throw InternetException('');
     } on RequestTimeOutException {
@@ -318,8 +316,9 @@ class NetworkApiServices extends BaseApiServices {
     }
   }
 
-  Future downloadFile(String url, var params, String fileName, String fileExtension) async {
-    String? idToken = await _authService.getIdToken();
+  Future downloadFile(String url, var params, String fileName,
+      String fileExtension) async {
+    String? idToken = await getIdToken();
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $idToken',
@@ -331,15 +330,16 @@ class NetworkApiServices extends BaseApiServices {
         headers: headers,
       );
 
-      final timestamp = DateTime.now().millisecondsSinceEpoch;
-      if(fileExtension == '.yt'){
+      final timestamp = DateTime
+          .now()
+          .millisecondsSinceEpoch;
+      if (fileExtension == '.yt') {
         fileExtension = '.txt';
       }
       final completeFileName = '$fileName-$timestamp$fileExtension'.trim();
       debugPrint(idToken);
 
       await writeFileBytes(completeFileName, response.bodyBytes);
-
     } on SocketException {
       throw InternetException('');
     } on RequestTimeOutException {
@@ -349,7 +349,7 @@ class NetworkApiServices extends BaseApiServices {
 
   Future postApiForFileBytes(String url, var data) async {
     debugPrint("data -----------------  $data");
-    String? idToken = await _authService.getIdToken();
+    String? idToken = await getIdToken();
 
     final headers = {
       'Content-Type': 'application/json',
@@ -363,14 +363,14 @@ class NetworkApiServices extends BaseApiServices {
         body: jsonEncode(data),
       );
       debugPrint(idToken);
-      if(response.statusCode == 200) {
+      if (response.statusCode == 200) {
         // await writeFileBytes(completeFileName, response.bodyBytes);
         return response.bodyBytes;
       }
-      else if(response.statusCode == 400){
+      else if (response.statusCode == 400) {
         Get.back();
         throw Exception(jsonDecode(response.body)["detail"]);
-      }else{
+      } else {
         throw Exception('Error: statusCode= ${response.statusCode}');
       }
     } on SocketException {
@@ -380,7 +380,7 @@ class NetworkApiServices extends BaseApiServices {
     }
   }
 
-  Future<void> writeFileBytes(String fileName, List<int> bytes) async{
+  Future<void> writeFileBytes(String fileName, List<int> bytes) async {
     // Check for permission and request if not granted
     var status = await Permission.storage.status;
     if (!status.isGranted) {
@@ -388,7 +388,8 @@ class NetworkApiServices extends BaseApiServices {
     }
 
     if (status.isGranted) {
-      final downloadsDirectory = await ExternalPath.getExternalStoragePublicDirectory(
+      final downloadsDirectory = await ExternalPath
+          .getExternalStoragePublicDirectory(
           ExternalPath.DIRECTORY_DOWNLOADS);
 
       final filePath = path.join(downloadsDirectory, fileName);
@@ -398,7 +399,7 @@ class NetworkApiServices extends BaseApiServices {
       await file.writeAsBytes(Uint8List.fromList(bytes));
       Utils.toastMsg('File downloaded at ${file.path}');
       OpenFile.open(file.path);
-    }else{
+    } else {
       Utils.toastMsg('Storage Permission denied');
     }
   }
@@ -418,10 +419,13 @@ class NetworkApiServices extends BaseApiServices {
         throw ValidationException("Validation Error");
       case 500:
       case 503:
-        throw FetchDataException('Server under maintenance,Try again later!. Status: ${response.statusCode.toString()}');
+        throw FetchDataException(
+            'Server under maintenance,Try again later!. Status: ${response
+                .statusCode.toString()}');
       default:
         throw FetchDataException(
-            'Error occurred while communicating with server. Status: ${response.statusCode.toString()}');
+            'Error occurred while communicating with server. Status: ${response
+                .statusCode.toString()}');
     }
   }
 }

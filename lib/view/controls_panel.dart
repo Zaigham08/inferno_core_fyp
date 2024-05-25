@@ -148,18 +148,28 @@ class _ControlPanelState extends State<ControlPanel> {
                 sectionName: "Surveillance commands",
                 items: [
                   CommandItem(
-                    text: "Keylogger",
-                    icon: FontAwesomeIcons.keyboard,
+                    text: "ScreenShot",
+                    icon: FontAwesomeIcons.solidImage,
                     iconSize: 27,
                     onTap: () {
-                      Get.to(() => KeyLogger(targetId: widget.targetId));
+                      generalController.takeScreenShot(widget.targetId);
                     },
                   ),
                   CommandItem(
                     text: "Screen",
                     icon: Icons.desktop_windows_outlined,
                     iconSize: 30,
-                    onTap: () {},
+                    onTap: () async {
+                      generalController.startScreenMonitoring(widget.targetId);
+                    },
+                  ),
+                  CommandItem(
+                    text: "Keylogger",
+                    icon: FontAwesomeIcons.keyboard,
+                    iconSize: 27,
+                    onTap: () {
+                      Get.to(() => KeyLogger(targetId: widget.targetId));
+                    },
                   ),
                   CommandItem(
                     text: "Network",
