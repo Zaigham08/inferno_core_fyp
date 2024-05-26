@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:inferno_core_fyp/res/constants.dart';
 import 'package:inferno_core_fyp/res/helper_extensions.dart';
 import 'package:inferno_core_fyp/view%20models/controllers/target_controller.dart';
+import 'package:inferno_core_fyp/view/ai_chat_screen.dart';
 import 'package:inferno_core_fyp/view/controls_panel.dart';
 
 import '../res/widgets/appBar components/my_appbar.dart';
@@ -151,7 +152,11 @@ class HomePage extends StatelessWidget {
               }),
               15.ph,
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Get.to(() => ChatScreen(
+                        targetId: targetController.onlineTargets[0].targetId,
+                      ));
+                },
                 child: Container(
                   height: 60,
                   padding:

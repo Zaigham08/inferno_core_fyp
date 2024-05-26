@@ -1,8 +1,10 @@
 class AppUrl{
 
-  static const baseUrl = 'http://34.100.163.13';
+  static const baseUrl = 'http://35.244.51.204';
   //user
   static const userApi = '$baseUrl/users/';
+  //ai chat
+  static const aiChatApi = '$baseUrl/ai/chat';
   //target
   static const targetApi = '$baseUrl/target/';
   static const getAllTargetsApi = '$baseUrl/target/all';

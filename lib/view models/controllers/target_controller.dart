@@ -47,25 +47,6 @@ class TargetController extends GetxController {
     }
   }
 
-  // Future<void> getTarget(String targetId) async {
-  //   try {
-  //     isError.value = false;
-  //     loading.value = true;
-  //     final Map<String, String> params = {
-  //       'target_id': targetId,
-  //     };
-  //     final Map<String, dynamic> data = await _repo.getTarget(params);
-  //
-  //     final TargetModel fileModel = TargetModel.fromJson(data);
-  //     files.assignAll(fileModel.files);
-  //     loading.value = false; // Update collections
-  //   } catch (error) {
-  //     loading.value = false;
-  //     isError.value = true;
-  //     errorStr.value = error.toString();
-  //   }
-  // }
-
   Future<void> getAllTargets() async {
     try {
       isError.value = false;

@@ -45,4 +45,8 @@ class TargetRepository{
     return await _apiService.writeFileBytes(fileName,bytes);
   }
 
+  Future<dynamic> getAiResponse(var data) async{
+    return await _apiService.postApi(AppUrl.aiChatApi, data);
+  }
+
 }
