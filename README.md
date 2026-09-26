@@ -1,6 +1,8 @@
 # inferno_core_fyp
 
-A new Flutter project.
+This final-year project is a penetration testing tool designed to simulate controlled cyberattacks against a target machine. The purpose of the tool is to identify potential security vulnerabilities, assess the system’s security posture, and help users understand how an attacker could exploit weaknesses in the system.
+
+The project focuses on performing authorized security assessments in a controlled environment. By identifying vulnerabilities and providing relevant findings, the tool can assist system administrators and security professionals in taking appropriate measures to strengthen the system, reduce security risks, and improve its overall resilience against cyber threats.
 
 ## Getting Started
 
